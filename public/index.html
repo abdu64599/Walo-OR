@@ -17,11 +17,7 @@
 
     body {
       margin: 0;
-      font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
+      font-family: Arial, Helvetica, sans-serif;
       background: #f4f7f5;
       color: #17231c;
     }
@@ -48,24 +44,27 @@
       margin: 20px auto;
     }
 
-    .profile {
+    .profile,
+    .card {
       background: white;
       border-radius: 16px;
       padding: 20px;
       margin-bottom: 18px;
-      box-shadow:
-        0 4px 15px rgba(0,0,0,.07);
+      box-shadow: 0 4px 15px rgba(0,0,0,.07);
     }
 
-    .profile h2 {
+    .profile h2,
+    .card h2 {
       margin-top: 0;
       color: #087443;
     }
 
     .grid {
       display: grid;
-      grid-template-columns:
-        repeat(auto-fit, minmax(160px, 1fr));
+      grid-template-columns: repeat(
+        auto-fit,
+        minmax(160px, 1fr)
+      );
       gap: 12px;
     }
 
@@ -83,19 +82,18 @@
       margin-top: 5px;
     }
 
-    .card {
-      background: white;
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 18px;
-      box-shadow:
-        0 4px 15px rgba(0,0,0,.07);
-      overflow-x: auto;
+    .code {
+      display: inline-block;
+      background: #eef8f2;
+      color: #087443;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-weight: bold;
     }
 
-    .card h2 {
-      margin-top: 0;
-      color: #087443;
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
     }
 
     table {
@@ -149,8 +147,7 @@
       padding: 30px;
       border-radius: 16px;
       text-align: center;
-      box-shadow:
-        0 4px 20px rgba(0,0,0,.08);
+      box-shadow: 0 4px 20px rgba(0,0,0,.08);
     }
 
     .error h2 {
@@ -163,154 +160,200 @@
       padding: 25px;
     }
 
-    .code {
-      display: inline-block;
+    .success {
       background: #eef8f2;
-      color: #087443;
-      padding: 6px 10px;
+      border-left: 5px solid #087443;
+      padding: 12px;
       border-radius: 8px;
-      font-weight: bold;
+      margin-bottom: 15px;
     }
   </style>
 </head>
 
 <body>
 
-  <header class="header">
-    <h1>🎓 Walo-OR</h1>
-    <p>Attendance fi Bu'aa Qormaataa</p>
-  </header>
+<header class="header">
+  <h1>🎓 Walo-OR</h1>
+  <p>Attendance fi Bu'aa Qormaataa</p>
+</header>
 
-  <main class="container">
+<main class="container">
 
-    <div id="loading" class="loading">
-      ⏳ Odeeffannoo kee fe'aa jira...
-    </div>
+  <div id="loading" class="loading">
+    ⏳ Odeeffannoo kee fe'aa jira...
+  </div>
 
-    <div id="errorBox"
-         class="error"
-         style="display:none;">
-    </div>
+  <div
+    id="errorBox"
+    class="error"
+    style="display:none;"
+  ></div>
 
-    <div id="content"
-         style="display:none;">
+  <div
+    id="content"
+    style="display:none;"
+  >
 
-      <!-- PROFILE -->
-      <section class="profile">
+    <!-- PROFILE -->
+    <section class="profile">
 
-        <h2 id="studentName">
-          👤 Barataa
-        </h2>
+      <h2 id="studentName">
+        👤 Barataa
+      </h2>
 
-        <p>
-          Koodii:
-          <span
-            id="studentCode"
-            class="code">
-          </span>
-        </p>
+      <p>
+        Koodii:
+        <span
+          id="studentCode"
+          class="code"
+        ></span>
+      </p>
 
-        <p>
-          Kutaa:
-          <strong id="className"></strong>
-        </p>
+      <p>
+        Kutaa:
+        <strong id="className"></strong>
+      </p>
 
-        <p>
-          Sadarkaa:
-          <strong id="grade"></strong>
-        </p>
+      <p>
+        Sadarkaa:
+        <strong id="grade"></strong>
+      </p>
 
-      </section>
+    </section>
 
-      <!-- ATTENDANCE SUMMARY -->
-      <section class="card">
 
-        <h2>📅 Attendance Koo</h2>
+    <!-- ATTENDANCE SUMMARY -->
+    <section class="card">
 
-        <div class="grid">
+      <h2>📅 Attendance Koo</h2>
 
-          <div class="stat">
-            Guutuu
-            <strong id="attTotal">0</strong>
-          </div>
+      <div class="grid">
 
-          <div class="stat">
-            🟢 Present
-            <strong id="attPresent">0</strong>
-          </div>
-
-          <div class="stat">
-            🔴 Absent
-            <strong id="attAbsent">0</strong>
-          </div>
-
-          <div class="stat">
-            🟡 Late
-            <strong id="attLate">0</strong>
-          </div>
-
+        <div class="stat">
+          Guutuu
+          <strong id="attTotal">0</strong>
         </div>
 
-      </section>
-
-      <!-- ATTENDANCE TABLE -->
-      <section class="card">
-
-        <h2>📋 Galmee Attendance</h2>
-
-        <div id="attendanceTable">
+        <div class="stat">
+          🟢 Present
+          <strong id="attPresent">0</strong>
         </div>
 
-      </section>
-
-      <!-- RESULTS -->
-      <section class="card">
-
-        <h2>🏆 Bu'aa Qormaataa Koo</h2>
-
-        <div id="resultsTable">
+        <div class="stat">
+          🔴 Absent
+          <strong id="attAbsent">0</strong>
         </div>
 
-      </section>
+        <div class="stat">
+          🟡 Late
+          <strong id="attLate">0</strong>
+        </div>
 
-    </div>
+      </div>
 
-  </main>
+    </section>
 
-  <footer class="footer">
-    © 2026 Walo-OR
-  </footer>
+
+    <!-- ATTENDANCE -->
+    <section class="card">
+
+      <h2>📋 Galmee Attendance</h2>
+
+      <div
+        id="attendanceTable"
+        class="table-wrap"
+      ></div>
+
+    </section>
+
+
+    <!-- RESULTS -->
+    <section class="card">
+
+      <h2>🏆 Bu'aa Qormaataa Koo</h2>
+
+      <div
+        id="resultsTable"
+        class="table-wrap"
+      ></div>
+
+    </section>
+
+  </div>
+
+</main>
+
+<footer class="footer">
+  © 2026 Walo-OR
+</footer>
+
 
 <script>
 
 function escapeHtml(value) {
+
   return String(value ?? "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+
 }
 
-function getToken() {
-  const path =
-    window.location.pathname;
 
-  const parts =
-    path.split("/").filter(Boolean);
+/*
+  TOKEN BARBAADAA
+  Fakkeenya:
+  /s/8fK29xPqLm
+
+  Akkasumas:
+  /s/8fK29xPqLm/
+  /s/8fK29xPqLm?x=1
+  ni fudhata.
+*/
+
+function getToken() {
+
+  const url =
+    new URL(window.location.href);
+
+  const path =
+    url.pathname;
+
+  const match =
+    path.match(/\/s\/([^\/?#]+)/i);
 
   if (
-    parts.length >= 2 &&
-    parts[0] === "s"
+    match &&
+    match[1]
   ) {
-    return parts[1];
+    return decodeURIComponent(
+      match[1]
+    );
+  }
+
+  /*
+    Yoo token query keessatti jiraate:
+    ?token=xxxxxxxx
+  */
+
+  const queryToken =
+    url.searchParams.get("token");
+
+  if (queryToken) {
+    return queryToken;
   }
 
   return "";
 }
 
+
 function formatDate(date) {
-  if (!date) return "-";
+
+  if (!date) {
+    return "-";
+  }
 
   const d =
     new Date(date);
@@ -323,6 +366,7 @@ function formatDate(date) {
     "om-ET"
   );
 }
+
 
 function statusText(status) {
 
@@ -341,6 +385,7 @@ function statusText(status) {
   return "-";
 }
 
+
 function statusClass(status) {
 
   if (
@@ -356,15 +401,27 @@ function statusClass(status) {
   return "";
 }
 
+
+/*
+  STUDENT DATA LOAD
+*/
+
 async function loadStudent() {
 
   const token =
     getToken();
 
+  console.log(
+    "Private student token:",
+    token
+  );
+
   if (!token) {
+
     showError(
-      "Linkii barataa hin argamne."
+      "Linkii dhuunfaa barataa hin argamne."
     );
+
     return;
   }
 
@@ -372,24 +429,53 @@ async function loadStudent() {
 
     const response =
       await fetch(
-        `/api/public/student/${encodeURIComponent(token)}`
+        `/api/public/student/${encodeURIComponent(token)}`,
+        {
+          method: "GET",
+          headers: {
+            "Accept": "application/json"
+          }
+        }
       );
 
-    const data =
-      await response.json();
+    let data;
 
-    if (!response.ok) {
+    try {
+      data =
+        await response.json();
+    } catch (jsonError) {
+
       throw new Error(
-        data.error ||
-        "Odeeffannoo argachuu hin dandeenye."
+        "Server irraa deebiin sirrii hin dhufne."
       );
     }
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        data.error ||
+        "Odeeffannoo barataa argachuu hin dandeenye."
+      );
+    }
+
+
+    if (!data.student) {
+
+      throw new Error(
+        "Barataan linkii kanaan hin argamne."
+      );
+    }
+
 
     showStudent(data);
 
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      "Student load error:",
+      error
+    );
 
     showError(
       error.message ||
@@ -397,6 +483,11 @@ async function loadStudent() {
     );
   }
 }
+
+
+/*
+  SHOW STUDENT
+*/
 
 function showStudent(data) {
 
@@ -416,62 +507,80 @@ function showStudent(data) {
       ? data.results
       : [];
 
+
   document.getElementById(
     "studentName"
   ).textContent =
     `👤 ${student.full_name || "Barataa"}`;
+
 
   document.getElementById(
     "studentCode"
   ).textContent =
     student.student_code || "-";
 
+
   document.getElementById(
     "className"
   ).textContent =
     student.class_name || "-";
+
 
   document.getElementById(
     "grade"
   ).textContent =
     student.grade || "-";
 
+
   document.getElementById(
     "attTotal"
   ).textContent =
-    summary.total || 0;
+    Number(summary.total || 0);
+
 
   document.getElementById(
     "attPresent"
   ).textContent =
-    summary.present || 0;
+    Number(summary.present || 0);
+
 
   document.getElementById(
     "attAbsent"
   ).textContent =
-    summary.absent || 0;
+    Number(summary.absent || 0);
+
 
   document.getElementById(
     "attLate"
   ).textContent =
-    summary.late || 0;
+    Number(summary.late || 0);
+
 
   renderAttendance(
     attendance
   );
 
+
   renderResults(
     results
   );
+
 
   document.getElementById(
     "loading"
   ).style.display = "none";
 
+
   document.getElementById(
     "content"
   ).style.display = "block";
+
 }
+
+
+/*
+  ATTENDANCE TABLE
+*/
 
 function renderAttendance(rows) {
 
@@ -480,29 +589,37 @@ function renderAttendance(rows) {
       "attendanceTable"
     );
 
+
   if (!rows.length) {
+
     box.innerHTML = `
-      <p>
+      <div class="success">
         📭 Attendance galmaa'ame
         hin jiru.
-      </p>
+      </div>
     `;
+
     return;
   }
 
+
   box.innerHTML = `
     <table>
+
       <thead>
+
         <tr>
           <th>Guyyaa</th>
           <th>Haala</th>
           <th>Yaada</th>
         </tr>
+
       </thead>
 
       <tbody>
 
         ${rows.map(row => `
+
           <tr>
 
             <td>
@@ -526,12 +643,19 @@ function renderAttendance(rows) {
             </td>
 
           </tr>
+
         `).join("")}
 
       </tbody>
+
     </table>
   `;
 }
+
+
+/*
+  RESULT TABLE
+*/
 
 function renderResults(rows) {
 
@@ -540,20 +664,25 @@ function renderResults(rows) {
       "resultsTable"
     );
 
+
   if (!rows.length) {
+
     box.innerHTML = `
-      <p>
+      <div class="success">
         📭 Bu'aan qormaataa
         ammaaf hin galmoofne.
-      </p>
+      </div>
     `;
+
     return;
   }
+
 
   box.innerHTML = `
     <table>
 
       <thead>
+
         <tr>
           <th>Guyyaa</th>
           <th>Qormaata</th>
@@ -561,18 +690,43 @@ function renderResults(rows) {
           <th>Qabxii</th>
           <th>%</th>
         </tr>
+
       </thead>
 
       <tbody>
 
         ${rows.map(row => {
 
-          const percentage =
-            Number(
-              row.percentage || 0
-            );
+          const score =
+            Number(row.score || 0);
+
+          const total =
+            Number(row.total || 100);
+
+          let percentage;
+
+          if (
+            row.percentage !== undefined &&
+            row.percentage !== null
+          ) {
+
+            percentage =
+              Number(row.percentage);
+
+          } else if (total > 0) {
+
+            percentage =
+              (score / total) * 100;
+
+          } else {
+
+            percentage = 0;
+
+          }
+
 
           return `
+
             <tr>
 
               <td>
@@ -583,7 +737,7 @@ function renderResults(rows) {
 
               <td>
                 ${escapeHtml(
-                  row.exam_name
+                  row.exam_name || "-"
                 )}
               </td>
 
@@ -595,9 +749,9 @@ function renderResults(rows) {
 
               <td>
                 <strong>
-                  ${row.score}
+                  ${score}
                   /
-                  ${row.total}
+                  ${total}
                 </strong>
               </td>
 
@@ -606,6 +760,7 @@ function renderResults(rows) {
               </td>
 
             </tr>
+
           `;
 
         }).join("")}
@@ -616,20 +771,29 @@ function renderResults(rows) {
   `;
 }
 
+
+/*
+  ERROR
+*/
+
 function showError(message) {
 
   document.getElementById(
     "loading"
   ).style.display = "none";
 
+
   const box =
     document.getElementById(
       "errorBox"
     );
 
+
   box.style.display = "block";
 
+
   box.innerHTML = `
+
     <h2>❌ Rakkoo</h2>
 
     <p>
@@ -637,15 +801,21 @@ function showError(message) {
     </p>
 
     <p>
-      Linkiin kun sirrii ta'uu isaa
-      mirkaneessi.
+      Linkiin dhuunfaa barataa
+      sirrii ta'uu isaa mirkaneessi.
     </p>
+
   `;
 }
+
+
+/*
+  START
+*/
 
 loadStudent();
 
 </script>
 
 </body>
-        </html>
+  </html>
