@@ -732,7 +732,325 @@ app.post("/api/attendance", teacherAuth, async (req, res) => {
     client.release();
   }
 });
+/* =====================================================
+   EXAM CODE - TEACHER
+===================================================== */
 
+function generateExamCode() {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+  let code = "OR-";
+
+  for (let i = 0; i < 6; i++) {
+    code += chars.charAt(
+      Math.floor(Math.random() * chars.length)
+    );
+  }
+
+  return code;
+}
+
+
+/* =========================
+   CREATE EXAM CODE
+========================= */
+
+app.post("/api/exams", teacherAuth, async (req, res) => {
+  try {
+    const {
+      title,
+      subject
+    } = req.body;
+
+    if (!title) {
+      return res.status(400).json({
+        error: "Maqaa qormaataa galchaa."
+      });
+    }
+
+    let examCode;
+    let exists = true;
+
+    while (exists) {
+      examCode = generateExamCode();
+
+      const check = await pool.query(
+        `
+        SELECT id
+        FROM exams
+        WHERE exam_code = $1
+        `,
+        [examCode]
+      );
+
+      exists = check.rows.length > 0;
+    }
+
+    const result = await pool.query(
+      `
+      INSERT INTO exams
+      (
+        exam_code,
+        title,
+        subject,
+        teacher_id
+      )
+      VALUES ($1, $2, $3, $4)
+      RETURNING *
+      `,
+      [
+        examCode,
+        title.trim(),
+        subject || "",
+        req.user.id
+      ]
+    );
+
+    res.json({
+      message: "Qormaanni uumame.",
+      exam: result.rows[0]
+    });
+
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      error: "Exam Code uumuu irratti rakkoo uumame."
+    });
+  }
+});
+
+
+/* =========================
+   TEACHER EXAMS
+========================= */
+
+app.get("/api/exams", teacherAuth, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `
+      SELECT
+        e.id,
+        e.exam_code,
+        e.title,
+        e.subject,
+        e.created_at,
+        COUNT(er.id)::int AS result_count
+      FROM exams e
+      LEFT JOIN exam_results er
+        ON er.exam_id = e.id
+      WHERE e.teacher_id = $1
+      GROUP BY e.id
+      ORDER BY e.id DESC
+      `,
+      [req.user.id]
+    );
+
+    res.json(result.rows);
+
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      error: err.message
+    });
+  }
+});
+
+
+/* =====================================================
+   TEACHER - BU'AA BARAATAA GALCHUU
+===================================================== */
+
+app.post(
+  "/api/exam-results",
+  teacherAuth,
+  async (req, res) => {
+    try {
+      const {
+        examCode,
+        studentCode,
+        score,
+        total
+      } = req.body;
+
+      if (
+        !examCode ||
+        !studentCode ||
+        score === undefined ||
+        total === undefined
+      ) {
+        return res.status(400).json({
+          error:
+            "Exam Code, Student Code, Score fi Total guutaa."
+        });
+      }
+
+      const examResult = await pool.query(
+        `
+        SELECT id
+        FROM exams
+        WHERE UPPER(exam_code) = UPPER($1)
+        AND teacher_id = $2
+        `,
+        [
+          examCode.trim(),
+          req.user.id
+        ]
+      );
+
+      if (examResult.rows.length === 0) {
+        return res.status(404).json({
+          error: "Exam Code hin argamne."
+        });
+      }
+
+      const studentResult = await pool.query(
+        `
+        SELECT id
+        FROM students
+        WHERE LOWER(student_code) = LOWER($1)
+        `,
+        [studentCode.trim()]
+      );
+
+      if (studentResult.rows.length === 0) {
+        return res.status(404).json({
+          error: "Student Code hin argamne."
+        });
+      }
+
+      const examId = examResult.rows[0].id;
+      const studentId = studentResult.rows[0].id;
+
+      const scoreNumber = Number(score);
+      const totalNumber = Number(total);
+
+      if (
+        !Number.isFinite(scoreNumber) ||
+        !Number.isFinite(totalNumber) ||
+        totalNumber <= 0 ||
+        scoreNumber < 0 ||
+        scoreNumber > totalNumber
+      ) {
+        return res.status(400).json({
+          error: "Score fi Total sirrii galchaa."
+        });
+      }
+
+      const percentage =
+        Math.round(
+          (scoreNumber / totalNumber) * 10000
+        ) / 100;
+
+      const result = await pool.query(
+        `
+        INSERT INTO exam_results
+        (
+          exam_id,
+          student_id,
+          score,
+          total,
+          percentage
+        )
+        VALUES ($1, $2, $3, $4, $5)
+        ON CONFLICT (exam_id, student_id)
+        DO UPDATE SET
+          score = EXCLUDED.score,
+          total = EXCLUDED.total,
+          percentage = EXCLUDED.percentage
+        RETURNING *
+        `,
+        [
+          examId,
+          studentId,
+          scoreNumber,
+          totalNumber,
+          percentage
+        ]
+      );
+
+      res.json({
+        message: "Bu'aan qormaataa galmaa'e.",
+        result: result.rows[0]
+      });
+
+    } catch (err) {
+      console.error(err);
+
+      res.status(500).json({
+        error:
+          "Bu'aa qormaataa galchuu irratti rakkoo uumame."
+      });
+    }
+  }
+);
+
+
+/* =====================================================
+   STUDENT - EXAM RESULT
+   STUDENT CODE ISAATII QOFA
+===================================================== */
+
+app.post(
+  "/api/student/exam-result",
+  studentAuth,
+  async (req, res) => {
+    try {
+      const {
+        examCode
+      } = req.body;
+
+      if (!examCode) {
+        return res.status(400).json({
+          error: "Exam Code galchaa."
+        });
+      }
+
+      const result = await pool.query(
+        `
+        SELECT
+          e.exam_code,
+          e.title,
+          e.subject,
+          er.score,
+          er.total,
+          er.percentage,
+          er.created_at
+        FROM exam_results er
+        JOIN exams e
+          ON e.id = er.exam_id
+        WHERE er.student_id = $1
+        AND UPPER(e.exam_code) = UPPER($2)
+        `,
+        [
+          req.student.id,
+          examCode.trim()
+        ]
+      );
+
+      if (result.rows.length === 0) {
+        return res.status(404).json({
+          error:
+            "Qormaata kanaaf bu'aan kee hin argamne."
+        });
+      }
+
+      res.json({
+        message: "Bu'aan qormaataa argame.",
+        result: result.rows[0]
+      });
+
+    } catch (err) {
+      console.error(err);
+
+      res.status(500).json({
+        error:
+          "Bu'aa qormaataa ilaalu irratti rakkoo uumame."
+      });
+    }
+  }
+);
 /* =========================
    REPORT
 ========================= */
