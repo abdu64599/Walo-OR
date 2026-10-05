@@ -1,7 +1,7 @@
 {
   "name": "walo-or",
   "version": "1.0.0",
-  "description": "Walo-OR Attendance Management System",
+  "description": "Walo-OR Attendance and Student Exam Result System",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
