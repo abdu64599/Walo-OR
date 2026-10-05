@@ -8,6 +8,7 @@ const { Pool } = require("pg");
 const app = express();
 
 const PORT = process.env.PORT || 10000;
+
 const JWT_SECRET =
   process.env.JWT_SECRET || "walo-or-change-this-secret";
 
@@ -21,7 +22,10 @@ const pool = new Pool({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "public")));
+
+app.use(
+  express.static(path.join(__dirname, "public"))
+);
 
 /* =========================================================
    DATABASE
@@ -61,11 +65,11 @@ async function initDatabase() {
         class_id INTEGER
           REFERENCES classes(id)
           ON DELETE SET NULL,
+        private_token TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
 
-    /* Existing database irratti column yoo hin jirre dabala */
     await pool.query(`
       ALTER TABLE students
       ADD COLUMN IF NOT EXISTS private_token TEXT;
@@ -81,16 +85,28 @@ async function initDatabase() {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS attendance (
         id SERIAL PRIMARY KEY,
+
         student_id INTEGER NOT NULL
           REFERENCES students(id)
           ON DELETE CASCADE,
+
         class_id INTEGER
           REFERENCES classes(id)
           ON DELETE CASCADE,
+
         attendance_date DATE NOT NULL,
+
         status VARCHAR(30) NOT NULL
-          CHECK (status IN ('present', 'absent', 'late')),
+          CHECK (
+            status IN (
+              'present',
+              'absent',
+              'late'
+            )
+          ),
+
         note TEXT,
+
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
         UNIQUE(student_id, attendance_date)
@@ -106,6 +122,7 @@ async function initDatabase() {
           ON DELETE CASCADE,
 
         exam_name VARCHAR(200) NOT NULL,
+
         subject VARCHAR(150),
 
         score NUMERIC(10,2)
@@ -115,13 +132,15 @@ async function initDatabase() {
           NOT NULL DEFAULT 100,
 
         exam_date DATE DEFAULT CURRENT_DATE,
+
         note TEXT,
 
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
 
-    /* Barattoota duraan jiran token hin qabneef token uuma */
+    /* Token hin qabneef token haaraa uuma */
+
     const oldStudents = await pool.query(`
       SELECT id
       FROM students
@@ -129,20 +148,24 @@ async function initDatabase() {
     `);
 
     for (const student of oldStudents.rows) {
+
       let token;
       let exists = true;
 
       while (exists) {
-        token = crypto.randomBytes(24).toString("hex");
 
-        const check = await pool.query(
-          `
-          SELECT id
-          FROM students
-          WHERE private_token = $1
-          `,
-          [token]
-        );
+        token =
+          crypto.randomBytes(24).toString("hex");
+
+        const check =
+          await pool.query(
+            `
+            SELECT id
+            FROM students
+            WHERE private_token = $1
+            `,
+            [token]
+          );
 
         exists = check.rows.length > 0;
       }
@@ -157,12 +180,18 @@ async function initDatabase() {
       );
     }
 
-    console.log("Database migrations completed.");
+    console.log(
+      "Database migrations completed."
+    );
+
   } catch (error) {
+
     console.error(
       "Database initialization failed:",
       error
     );
+
+    throw error;
   }
 }
 
@@ -171,7 +200,9 @@ async function initDatabase() {
 ========================================================= */
 
 app.get("/health", async (req, res) => {
+
   try {
+
     await pool.query("SELECT 1");
 
     res.json({
@@ -179,7 +210,9 @@ app.get("/health", async (req, res) => {
       database: "connected",
       message: "Walo-OR server is running."
     });
+
   } catch (error) {
+
     res.status(500).json({
       ok: false,
       database: "error",
@@ -189,18 +222,21 @@ app.get("/health", async (req, res) => {
 });
 
 app.get("/api/health", async (req, res) => {
+
   try {
+
     await pool.query("SELECT 1");
 
     res.json({
       ok: true,
       database: "connected"
     });
+
   } catch (error) {
+
     res.status(500).json({
       ok: false,
-      database: "error",
-      error: error.message
+      database: "error"
     });
   }
 });
@@ -210,6 +246,7 @@ app.get("/api/health", async (req, res) => {
 ========================================================= */
 
 function makeToken(user) {
+
   return jwt.sign(
     {
       id: user.id,
@@ -223,140 +260,189 @@ function makeToken(user) {
 }
 
 function teacherAuth(req, res, next) {
+
   try {
-    const auth = req.headers.authorization || "";
+
+    const auth =
+      req.headers.authorization || "";
 
     if (!auth.startsWith("Bearer ")) {
+
       return res.status(401).json({
         error: "Login godhi."
       });
     }
 
-    const token = auth.substring(7);
-    const decoded = jwt.verify(
-      token,
-      JWT_SECRET
-    );
+    const token =
+      auth.substring(7);
+
+    const decoded =
+      jwt.verify(
+        token,
+        JWT_SECRET
+      );
 
     if (decoded.role !== "teacher") {
+
       return res.status(403).json({
         error: "Teacher qofaaf."
       });
     }
 
     req.user = decoded;
+
     next();
+
   } catch (error) {
-    res.status(401).json({
-      error: "Token sirrii miti ykn yeroon isaa darbeera."
+
+    return res.status(401).json({
+      error:
+        "Token sirrii miti ykn yeroon isaa darbeera."
     });
   }
 }
 
 /* =========================================================
-   TEACHER REGISTER
+   REGISTER
 ========================================================= */
 
 app.post("/api/register", async (req, res) => {
+
   try {
+
     const {
       name,
       email,
       password
     } = req.body;
 
-    if (!name || !email || !password) {
+    if (
+      !name ||
+      !email ||
+      !password
+    ) {
+
       return res.status(400).json({
-        error: "Maqaa, email fi password guuti."
+        error:
+          "Maqaa, email fi password guuti."
       });
     }
 
     if (password.length < 6) {
+
       return res.status(400).json({
-        error: "Password yoo xiqqaate qubee 6 qabaachuu qaba."
+        error:
+          "Password yoo xiqqaate qubee 6 qabaachuu qaba."
       });
     }
 
-    const existing = await pool.query(
-      `
-      SELECT id
-      FROM users
-      WHERE LOWER(email) = LOWER($1)
-      `,
-      [email]
-    );
+    const existing =
+      await pool.query(
+        `
+        SELECT id
+        FROM users
+        WHERE LOWER(email) = LOWER($1)
+        `,
+        [email.trim()]
+      );
 
     if (existing.rows.length) {
+
       return res.status(400).json({
-        error: "Email kun duraan jira."
+        error:
+          "Email kun duraan jira."
       });
     }
 
     const hash =
-      await bcrypt.hash(password, 10);
+      await bcrypt.hash(
+        password,
+        10
+      );
 
-    const result = await pool.query(
-      `
-      INSERT INTO users
-      (
-        name,
-        email,
-        password_hash,
-        role
-      )
-      VALUES ($1, $2, $3, 'teacher')
-      RETURNING id, name, email, role
-      `,
-      [
-        name.trim(),
-        email.trim(),
-        hash
-      ]
-    );
+    const result =
+      await pool.query(
+        `
+        INSERT INTO users
+        (
+          name,
+          email,
+          password_hash,
+          role
+        )
 
-    const user = result.rows[0];
+        VALUES
+        ($1, $2, $3, 'teacher')
+
+        RETURNING
+          id,
+          name,
+          email,
+          role
+        `,
+        [
+          name.trim(),
+          email.trim(),
+          hash
+        ]
+      );
+
+    const user =
+      result.rows[0];
 
     res.json({
       token: makeToken(user),
       user
     });
+
   } catch (error) {
-    console.error(error);
+
+    console.error(
+      "Register error:",
+      error
+    );
 
     res.status(500).json({
-      error: "Account uumuu hin dandeenye."
+      error:
+        "Account uumuu hin dandeenye."
     });
   }
 });
 
 /* =========================================================
-   TEACHER LOGIN
+   LOGIN
 ========================================================= */
 
 app.post("/api/login", async (req, res) => {
+
   try {
+
     const {
       email,
       password
     } = req.body;
 
-    const result = await pool.query(
-      `
-      SELECT *
-      FROM users
-      WHERE LOWER(email) = LOWER($1)
-      AND role = 'teacher'
-      `,
-      [email]
-    );
+    const result =
+      await pool.query(
+        `
+        SELECT *
+        FROM users
+        WHERE LOWER(email) = LOWER($1)
+        AND role = 'teacher'
+        `,
+        [email]
+      );
 
     if (!result.rows.length) {
+
       return res.status(401).json({
-        error: "Email ykn password sirrii miti."
+        error:
+          "Email ykn password sirrii miti."
       });
     }
 
-    const user = result.rows[0];
+    const user =
+      result.rows[0];
 
     const ok =
       await bcrypt.compare(
@@ -365,13 +451,16 @@ app.post("/api/login", async (req, res) => {
       );
 
     if (!ok) {
+
       return res.status(401).json({
-        error: "Email ykn password sirrii miti."
+        error:
+          "Email ykn password sirrii miti."
       });
     }
 
     res.json({
       token: makeToken(user),
+
       user: {
         id: user.id,
         name: user.name,
@@ -379,195 +468,266 @@ app.post("/api/login", async (req, res) => {
         role: user.role
       }
     });
+
   } catch (error) {
-    console.error(error);
+
+    console.error(
+      "Login error:",
+      error
+    );
 
     res.status(500).json({
-      error: "Login hin milkoofne."
+      error:
+        "Login hin milkoofne."
     });
   }
 });
 
 /* =========================================================
-   TEACHER PROFILE
+   ME
 ========================================================= */
 
 app.get(
   "/api/me",
   teacherAuth,
   async (req, res) => {
+
     try {
-      const result = await pool.query(
-        `
-        SELECT
-          id,
-          name,
-          email,
-          role,
-          created_at
-        FROM users
-        WHERE id = $1
-        `,
-        [req.user.id]
-      );
+
+      const result =
+        await pool.query(
+          `
+          SELECT
+            id,
+            name,
+            email,
+            role,
+            created_at
+          FROM users
+          WHERE id = $1
+          `,
+          [req.user.id]
+        );
 
       if (!result.rows.length) {
+
         return res.status(404).json({
-          error: "User hin argamne."
+          error:
+            "User hin argamne."
         });
       }
 
-      res.json(result.rows[0]);
+      res.json(
+        result.rows[0]
+      );
+
     } catch (error) {
+
       res.status(500).json({
-        error: "Profile argachuu hin dandeenye."
+        error:
+          "Profile argachuu hin dandeenye."
       });
     }
   }
 );
 
 /* =========================================================
-   CLASSES
+   CLASSES GET
 ========================================================= */
 
 app.get(
   "/api/classes",
   teacherAuth,
   async (req, res) => {
+
     try {
-      const result = await pool.query(
-        `
-        SELECT
-          c.id,
-          c.name,
-          c.grade,
-          c.teacher_id,
-          c.created_at,
 
-          (
-            SELECT COUNT(*)
-            FROM students s
-            WHERE s.class_id = c.id
-          ) AS student_count
+      const result =
+        await pool.query(
+          `
+          SELECT
+            c.id,
+            c.name,
+            c.grade,
+            c.teacher_id,
+            c.created_at,
 
-        FROM classes c
+            (
+              SELECT COUNT(*)
+              FROM students s
+              WHERE s.class_id = c.id
+            ) AS student_count
 
-        WHERE c.teacher_id = $1
+          FROM classes c
 
-        ORDER BY c.id DESC
-        `,
-        [req.user.id]
+          WHERE c.teacher_id = $1
+
+          ORDER BY c.id DESC
+          `,
+          [req.user.id]
+        );
+
+      res.json(
+        result.rows
       );
 
-      res.json(result.rows);
     } catch (error) {
+
+      console.error(error);
+
       res.status(500).json({
-        error: "Kutaa argachuu hin dandeenye."
+        error:
+          "Kutaa argachuu hin dandeenye."
       });
     }
   }
 );
 
+/* =========================================================
+   CREATE CLASS
+========================================================= */
+
 app.post(
   "/api/classes",
   teacherAuth,
   async (req, res) => {
+
     try {
+
       const {
         name,
         grade
       } = req.body;
 
       if (!name) {
+
         return res.status(400).json({
-          error: "Maqaa kutaa galchi."
+          error:
+            "Maqaa kutaa galchi."
         });
       }
 
-      const result = await pool.query(
-        `
-        INSERT INTO classes
-        (
-          name,
-          grade,
-          teacher_id
-        )
-        VALUES ($1, $2, $3)
-        RETURNING *
-        `,
-        [
-          name.trim(),
-          grade || "",
-          req.user.id
-        ]
-      );
+      const result =
+        await pool.query(
+          `
+          INSERT INTO classes
+          (
+            name,
+            grade,
+            teacher_id
+          )
+
+          VALUES
+          ($1, $2, $3)
+
+          RETURNING *
+          `,
+          [
+            name.trim(),
+            grade || "",
+            req.user.id
+          ]
+        );
 
       res.json({
-        message: "Kutaan uumameera.",
-        class: result.rows[0]
+        message:
+          "Kutaan uumameera.",
+        class:
+          result.rows[0]
       });
+
     } catch (error) {
+
       res.status(500).json({
-        error: "Kutaa uumuu hin dandeenye."
+        error:
+          "Kutaa uumuu hin dandeenye."
       });
     }
   }
 );
+
+/* =========================================================
+   DELETE CLASS
+========================================================= */
 
 app.delete(
   "/api/classes/:id",
   teacherAuth,
   async (req, res) => {
+
     try {
-      const result = await pool.query(
-        `
-        DELETE FROM classes
-        WHERE id = $1
-        AND teacher_id = $2
-        RETURNING id
-        `,
-        [
-          Number(req.params.id),
-          req.user.id
-        ]
-      );
+
+      const result =
+        await pool.query(
+          `
+          DELETE FROM classes
+          WHERE id = $1
+          AND teacher_id = $2
+          RETURNING id
+          `,
+          [
+            Number(req.params.id),
+            req.user.id
+          ]
+        );
 
       if (!result.rows.length) {
+
         return res.status(404).json({
-          error: "Kutaan hin argamne."
+          error:
+            "Kutaan hin argamne."
         });
       }
 
       res.json({
-        message: "Kutaan haqameera."
+        message:
+          "Kutaan haqameera."
       });
+
     } catch (error) {
+
       res.status(500).json({
-        error: "Kutaa haquu hin dandeenye."
+        error:
+          "Kutaa haquu hin dandeenye."
       });
     }
   }
 );
 
 /* =========================================================
-   GENERATE PRIVATE TOKEN
+   PRIVATE TOKEN
 ========================================================= */
 
 function generatePrivateToken() {
+
   return crypto
     .randomBytes(24)
     .toString("hex");
 }
 
+function getBaseUrl(req) {
+
+  const host =
+    req.get("host");
+
+  if (!host) {
+    return "";
+  }
+
+  return `${req.protocol}://${host}`;
+}
+
 /* =========================================================
-   STUDENTS - GET
+   STUDENTS GET
 ========================================================= */
 
 app.get(
   "/api/students",
   teacherAuth,
   async (req, res) => {
+
     try {
+
       const {
         classId
       } = req.query;
@@ -597,6 +757,7 @@ app.get(
       ];
 
       if (classId) {
+
         values.push(
           Number(classId)
         );
@@ -616,46 +777,74 @@ app.get(
           values
         );
 
+      const students =
+        result.rows.map(
+          student => {
+
+            const privatePath =
+              student.private_token
+                ? `/s/${student.private_token}`
+                : null;
+
+            const privateLink =
+              privatePath
+                ? `${getBaseUrl(req)}${privatePath}`
+                : null;
+
+            return {
+              id: student.id,
+              full_name:
+                student.full_name,
+              student_code:
+                student.student_code,
+              phone:
+                student.phone,
+              class_id:
+                student.class_id,
+              class_name:
+                student.class_name,
+              grade:
+                student.grade,
+
+              private_path:
+                privatePath,
+
+              private_link:
+                privateLink
+            };
+          }
+        );
+
       res.json(
-        result.rows.map((student) => ({
-          ...student,
-          private_link:
-            `${getBaseUrl(req)}/s/${student.private_token}`
-        }))
+        students
       );
+
     } catch (error) {
-      console.error(error);
+
+      console.error(
+        "Students GET error:",
+        error
+      );
 
       res.status(500).json({
-        error: "Barattoota argachuu hin dandeenye."
+        error:
+          "Barattoota argachuu hin dandeenye."
       });
     }
   }
 );
 
 /* =========================================================
-   BASE URL
-========================================================= */
-
-function getBaseUrl(req) {
-  const forwardedProto =
-    req.headers["x-forwarded-proto"];
-
-  const protocol =
-    forwardedProto || req.protocol;
-
-  return `${protocol}://${req.get("host")}`;
-}
-
-/* =========================================================
-   STUDENT CREATE
+   CREATE STUDENT
 ========================================================= */
 
 app.post(
   "/api/students",
   teacherAuth,
   async (req, res) => {
+
     try {
+
       const {
         fullName,
         studentCode,
@@ -668,6 +857,7 @@ app.post(
         !studentCode ||
         !classId
       ) {
+
         return res.status(400).json({
           error:
             "Maqaa, koodii fi kutaa guuti."
@@ -689,8 +879,10 @@ app.post(
         );
 
       if (!classCheck.rows.length) {
+
         return res.status(403).json({
-          error: "Kutaa kana irratti hayyama hin qabdu."
+          error:
+            "Kutaa kana irratti hayyama hin qabdu."
         });
       }
 
@@ -699,19 +891,43 @@ app.post(
           `
           SELECT id
           FROM students
-          WHERE LOWER(student_code) = LOWER($1)
+          WHERE LOWER(student_code)
+            = LOWER($1)
           `,
-          [studentCode.trim()]
+          [
+            studentCode.trim()
+          ]
         );
 
       if (duplicate.rows.length) {
+
         return res.status(400).json({
-          error: "Student Code kun duraan jira."
+          error:
+            "Student Code kun duraan jira."
         });
       }
 
-      const privateToken =
-        generatePrivateToken();
+      let privateToken;
+      let tokenExists = true;
+
+      while (tokenExists) {
+
+        privateToken =
+          generatePrivateToken();
+
+        const check =
+          await pool.query(
+            `
+            SELECT id
+            FROM students
+            WHERE private_token = $1
+            `,
+            [privateToken]
+          );
+
+        tokenExists =
+          check.rows.length > 0;
+      }
 
       const result =
         await pool.query(
@@ -724,7 +940,10 @@ app.post(
             class_id,
             private_token
           )
-          VALUES ($1, $2, $3, $4, $5)
+
+          VALUES
+          ($1, $2, $3, $4, $5)
+
           RETURNING
             id,
             full_name,
@@ -745,34 +964,57 @@ app.post(
       const student =
         result.rows[0];
 
+      const privatePath =
+        `/s/${privateToken}`;
+
+      const privateLink =
+        `${getBaseUrl(req)}${privatePath}`;
+
       res.json({
-        message: "Barataan galmaa'eera.",
-        student,
+        message:
+          "Barataan galmaa'eera.",
+
+        student: {
+          ...student,
+          private_path:
+            privatePath,
+          private_link:
+            privateLink
+        },
+
+        private_path:
+          privatePath,
+
         private_link:
-          `${getBaseUrl(req)}/s/${privateToken}`
+          privateLink
       });
+
     } catch (error) {
+
       console.error(
         "Create student error:",
         error
       );
 
       res.status(500).json({
-        error: "Barataa galchuu hin dandeenye."
+        error:
+          "Barataa galchuu hin dandeenye."
       });
     }
   }
 );
 
 /* =========================================================
-   REGENERATE PRIVATE LINK
+   REGENERATE LINK
 ========================================================= */
 
 app.post(
   "/api/students/:id/regenerate-link",
   teacherAuth,
   async (req, res) => {
+
     try {
+
       const studentId =
         Number(req.params.id);
 
@@ -796,13 +1038,34 @@ app.post(
         );
 
       if (!check.rows.length) {
+
         return res.status(404).json({
-          error: "Barataan hin argamne."
+          error:
+            "Barataan hin argamne."
         });
       }
 
-      const token =
-        generatePrivateToken();
+      let token;
+      let exists = true;
+
+      while (exists) {
+
+        token =
+          generatePrivateToken();
+
+        const tokenCheck =
+          await pool.query(
+            `
+            SELECT id
+            FROM students
+            WHERE private_token = $1
+            `,
+            [token]
+          );
+
+        exists =
+          tokenCheck.rows.length > 0;
+      }
 
       await pool.query(
         `
@@ -816,18 +1079,100 @@ app.post(
         ]
       );
 
+      const privatePath =
+        `/s/${token}`;
+
+      const privateLink =
+        `${getBaseUrl(req)}${privatePath}`;
+
       res.json({
         message:
           "Linkii haaraan uumameera.",
 
+        private_path:
+          privatePath,
+
         private_link:
-          `${getBaseUrl(req)}/s/${token}`
+          privateLink
       });
+
     } catch (error) {
+
+      console.error(
+        "Regenerate error:",
+        error
+      );
+
+      res.status(500).json({
+        error:
+          "Link haaraa uumuu hin dandeenye."
+      });
+    }
+  }
+);
+
+/* =========================================================
+   REVOKE LINK
+========================================================= */
+
+app.post(
+  "/api/students/:id/revoke-link",
+  teacherAuth,
+  async (req, res) => {
+
+    try {
+
+      const studentId =
+        Number(req.params.id);
+
+      const check =
+        await pool.query(
+          `
+          SELECT s.id
+          FROM students s
+
+          JOIN classes c
+            ON c.id = s.class_id
+
+          WHERE
+            s.id = $1
+            AND c.teacher_id = $2
+          `,
+          [
+            studentId,
+            req.user.id
+          ]
+        );
+
+      if (!check.rows.length) {
+
+        return res.status(404).json({
+          error:
+            "Barataan hin argamne."
+        });
+      }
+
+      await pool.query(
+        `
+        UPDATE students
+        SET private_token = NULL
+        WHERE id = $1
+        `,
+        [studentId]
+      );
+
+      res.json({
+        message:
+          "Linkii barataa haqameera."
+      });
+
+    } catch (error) {
+
       console.error(error);
 
       res.status(500).json({
-        error: "Link haaraa uumuu hin dandeenye."
+        error:
+          "Link haquu hin dandeenye."
       });
     }
   }
@@ -841,12 +1186,15 @@ app.delete(
   "/api/students/:id",
   teacherAuth,
   async (req, res) => {
+
     try {
+
       const result =
         await pool.query(
           `
           DELETE FROM students s
           USING classes c
+
           WHERE
             s.id = $1
             AND s.class_id = c.id
@@ -861,41 +1209,51 @@ app.delete(
         );
 
       if (!result.rows.length) {
+
         return res.status(404).json({
-          error: "Barataan hin argamne."
+          error:
+            "Barataan hin argamne."
         });
       }
 
       res.json({
-        message: "Barataan haqameera."
+        message:
+          "Barataan haqameera."
       });
+
     } catch (error) {
+
       console.error(error);
 
       res.status(500).json({
-        error: "Barataa haquu hin dandeenye."
+        error:
+          "Barataa haquu hin dandeenye."
       });
     }
   }
 );
 
 /* =========================================================
-   ATTENDANCE - GET
+   ATTENDANCE GET
 ========================================================= */
 
 app.get(
   "/api/attendance",
   teacherAuth,
   async (req, res) => {
+
     try {
+
       const {
         classId,
         date
       } = req.query;
 
       if (!classId || !date) {
+
         return res.status(400).json({
-          error: "Class fi date barbaachisa."
+          error:
+            "Class fi date barbaachisa."
         });
       }
 
@@ -914,8 +1272,10 @@ app.get(
         );
 
       if (!check.rows.length) {
+
         return res.status(403).json({
-          error: "Kutaa kana irratti hayyama hin qabdu."
+          error:
+            "Kutaa kana irratti hayyama hin qabdu."
         });
       }
 
@@ -947,26 +1307,33 @@ app.get(
           ]
         );
 
-      res.json(result.rows);
+      res.json(
+        result.rows
+      );
+
     } catch (error) {
+
       console.error(error);
 
       res.status(500).json({
-        error: "Attendance argachuu hin dandeenye."
+        error:
+          "Attendance argachuu hin dandeenye."
       });
     }
   }
 );
 
 /* =========================================================
-   ATTENDANCE - SAVE
+   ATTENDANCE SAVE
 ========================================================= */
 
 app.post(
   "/api/attendance",
   teacherAuth,
   async (req, res) => {
+
     try {
+
       const {
         studentId,
         classId,
@@ -981,8 +1348,10 @@ app.post(
         !date ||
         !status
       ) {
+
         return res.status(400).json({
-          error: "Attendance guuti."
+          error:
+            "Attendance guuti."
         });
       }
 
@@ -993,8 +1362,39 @@ app.post(
           "late"
         ].includes(status)
       ) {
+
         return res.status(400).json({
-          error: "Status sirrii miti."
+          error:
+            "Status sirrii miti."
+        });
+      }
+
+      const check =
+        await pool.query(
+          `
+          SELECT s.id
+          FROM students s
+
+          JOIN classes c
+            ON c.id = s.class_id
+
+          WHERE
+            s.id = $1
+            AND c.id = $2
+            AND c.teacher_id = $3
+          `,
+          [
+            Number(studentId),
+            Number(classId),
+            req.user.id
+          ]
+        );
+
+      if (!check.rows.length) {
+
+        return res.status(403).json({
+          error:
+            "Barataa kana irratti hayyama hin qabdu."
         });
       }
 
@@ -1020,9 +1420,14 @@ app.post(
           )
 
           DO UPDATE SET
-            class_id = EXCLUDED.class_id,
-            status = EXCLUDED.status,
-            note = EXCLUDED.note
+            class_id =
+              EXCLUDED.class_id,
+
+            status =
+              EXCLUDED.status,
+
+            note =
+              EXCLUDED.note
 
           RETURNING *
           `,
@@ -1036,28 +1441,36 @@ app.post(
         );
 
       res.json({
-        message: "Attendance galmaa'eera.",
-        attendance: result.rows[0]
+        message:
+          "Attendance galmaa'eera.",
+
+        attendance:
+          result.rows[0]
       });
+
     } catch (error) {
+
       console.error(error);
 
       res.status(500).json({
-        error: "Attendance galchuu hin dandeenye."
+        error:
+          "Attendance galchuu hin dandeenye."
       });
     }
   }
 );
 
 /* =========================================================
-   TEACHER REPORT
+   REPORT
 ========================================================= */
 
 app.get(
   "/api/report",
   teacherAuth,
   async (req, res) => {
+
     try {
+
       const {
         classId
       } = req.query;
@@ -1068,19 +1481,26 @@ app.get(
           s.full_name,
           s.student_code,
 
-          COUNT(a.id)::int AS total_days,
+          COUNT(a.id)::int
+            AS total_days,
 
-          COUNT(a.id) FILTER (
-            WHERE a.status = 'present'
-          )::int AS present_days,
+          COUNT(a.id)
+            FILTER (
+              WHERE a.status = 'present'
+            )::int
+            AS present_days,
 
-          COUNT(a.id) FILTER (
-            WHERE a.status = 'absent'
-          )::int AS absent_days,
+          COUNT(a.id)
+            FILTER (
+              WHERE a.status = 'absent'
+            )::int
+            AS absent_days,
 
-          COUNT(a.id) FILTER (
-            WHERE a.status = 'late'
-          )::int AS late_days
+          COUNT(a.id)
+            FILTER (
+              WHERE a.status = 'late'
+            )::int
+            AS late_days
 
         FROM students s
 
@@ -1098,6 +1518,7 @@ app.get(
       ];
 
       if (classId) {
+
         values.push(
           Number(classId)
         );
@@ -1123,30 +1544,40 @@ app.get(
           values
         );
 
-      res.json(result.rows);
+      res.json(
+        result.rows
+      );
+
     } catch (error) {
+
+      console.error(error);
+
       res.status(500).json({
-        error: "Report argachuu hin dandeenye."
+        error:
+          "Report argachuu hin dandeenye."
       });
     }
   }
 );
 
 /* =========================================================
-   TEACHER DASHBOARD
+   DASHBOARD
 ========================================================= */
 
 app.get(
   "/api/dashboard",
   teacherAuth,
   async (req, res) => {
+
     try {
+
       const [
         classes,
         students,
         attendance,
         results
       ] = await Promise.all([
+
         pool.query(
           `
           SELECT COUNT(*)::int AS count
@@ -1159,9 +1590,12 @@ app.get(
         pool.query(
           `
           SELECT COUNT(*)::int AS count
+
           FROM students s
+
           JOIN classes c
             ON c.id = s.class_id
+
           WHERE c.teacher_id = $1
           `,
           [req.user.id]
@@ -1170,9 +1604,12 @@ app.get(
         pool.query(
           `
           SELECT COUNT(*)::int AS count
+
           FROM attendance a
+
           JOIN classes c
             ON c.id = a.class_id
+
           WHERE c.teacher_id = $1
           `,
           [req.user.id]
@@ -1181,11 +1618,15 @@ app.get(
         pool.query(
           `
           SELECT COUNT(*)::int AS count
+
           FROM exam_results r
+
           JOIN students s
             ON s.id = r.student_id
+
           JOIN classes c
             ON c.id = s.class_id
+
           WHERE c.teacher_id = $1
           `,
           [req.user.id]
@@ -1193,28 +1634,42 @@ app.get(
       ]);
 
       res.json({
-        classes: Number(classes.rows[0].count),
-        students: Number(students.rows[0].count),
-        attendance: Number(attendance.rows[0].count),
-        results: Number(results.rows[0].count)
+        classes:
+          Number(classes.rows[0].count),
+
+        students:
+          Number(students.rows[0].count),
+
+        attendance:
+          Number(attendance.rows[0].count),
+
+        results:
+          Number(results.rows[0].count)
       });
+
     } catch (error) {
+
+      console.error(error);
+
       res.status(500).json({
-        error: "Dashboard argachuu hin dandeenye."
+        error:
+          "Dashboard argachuu hin dandeenye."
       });
     }
   }
 );
 
 /* =========================================================
-   TEACHER RESULTS
+   RESULTS GET
 ========================================================= */
 
 app.get(
   "/api/results",
   teacherAuth,
   async (req, res) => {
+
     try {
+
       const {
         classId,
         studentCode
@@ -1252,7 +1707,10 @@ app.get(
       ];
 
       if (classId) {
-        values.push(Number(classId));
+
+        values.push(
+          Number(classId)
+        );
 
         query += `
           AND c.id = $${values.length}
@@ -1260,13 +1718,14 @@ app.get(
       }
 
       if (studentCode) {
+
         values.push(
           studentCode.trim()
         );
 
         query += `
           AND LOWER(s.student_code)
-              = LOWER($${values.length})
+            = LOWER($${values.length})
         `;
       }
 
@@ -1282,12 +1741,17 @@ app.get(
           values
         );
 
-      res.json(result.rows);
+      res.json(
+        result.rows
+      );
+
     } catch (error) {
+
       console.error(error);
 
       res.status(500).json({
-        error: "Bu'aa qormaataa argachuu hin dandeenye."
+        error:
+          "Bu'aa qormaataa argachuu hin dandeenye."
       });
     }
   }
@@ -1301,7 +1765,9 @@ app.post(
   "/api/results",
   teacherAuth,
   async (req, res) => {
+
     try {
+
       const {
         studentCode,
         examName,
@@ -1312,7 +1778,11 @@ app.post(
         note
       } = req.body;
 
-      if (!studentCode || !examName) {
+      if (
+        !studentCode ||
+        !examName
+      ) {
+
         return res.status(400).json({
           error:
             "Koodii barataa fi maqaa qormaataa guuti."
@@ -1344,8 +1814,10 @@ app.post(
         );
 
       if (!student.rows.length) {
+
         return res.status(404).json({
-          error: "Barataa hin argamne."
+          error:
+            "Barataa hin argamne."
         });
       }
 
@@ -1360,8 +1832,10 @@ app.post(
         scoreValue < 0 ||
         scoreValue > totalValue
       ) {
+
         return res.status(400).json({
-          error: "Score ykn total sirrii miti."
+          error:
+            "Score ykn total sirrii miti."
         });
       }
 
@@ -1406,9 +1880,13 @@ app.post(
       res.json({
         message:
           "Bu'aan qormaataa galmaa'eera.",
-        result: result.rows[0]
+
+        result:
+          result.rows[0]
       });
+
     } catch (error) {
+
       console.error(error);
 
       res.status(500).json({
@@ -1427,7 +1905,9 @@ app.delete(
   "/api/results/:id",
   teacherAuth,
   async (req, res) => {
+
     try {
+
       const result =
         await pool.query(
           `
@@ -1449,8 +1929,10 @@ app.delete(
         );
 
       if (!result.rows.length) {
+
         return res.status(404).json({
-          error: "Bu'aan hin argamne."
+          error:
+            "Bu'aan hin argamne."
         });
       }
 
@@ -1458,7 +1940,9 @@ app.delete(
         message:
           "Bu'aan qormaataa haqameera."
       });
+
     } catch (error) {
+
       res.status(500).json({
         error:
           "Bu'aa haquu hin dandeenye."
@@ -1468,21 +1952,29 @@ app.delete(
 );
 
 /* =========================================================
-   PRIVATE STUDENT PAGE DATA
-   NO LOGIN REQUIRED
-   TOKEN IS THE SECRET
+   PUBLIC STUDENT DATA
 ========================================================= */
 
 app.get(
   "/api/public/student/:token",
   async (req, res) => {
-    try {
-      const token =
-        String(req.params.token || "").trim();
 
-      if (!token || token.length < 20) {
+    try {
+
+      const token =
+        String(
+          req.params.token || ""
+        ).trim();
+
+      if (
+        !token ||
+        token.length < 20 ||
+        token.length > 200
+      ) {
+
         return res.status(404).json({
-          error: "Linkii barataa sirrii miti."
+          error:
+            "Linkii barataa sirrii miti."
         });
       }
 
@@ -1503,12 +1995,14 @@ app.get(
           LEFT JOIN classes c
             ON c.id = s.class_id
 
-          WHERE s.private_token = $1
+          WHERE
+            s.private_token = $1
           `,
           [token]
         );
 
       if (!studentResult.rows.length) {
+
         return res.status(404).json({
           error:
             "Linkiin kun hin jiru ykn haqameera."
@@ -1561,30 +2055,6 @@ app.get(
           [student.id]
         );
 
-      const results =
-        resultResult.rows.map((row) => {
-          const score =
-            Number(row.score || 0);
-
-          const total =
-            Number(row.total || 100);
-
-          const percentage =
-            total > 0
-              ? (score / total) * 100
-              : 0;
-
-          return {
-            ...row,
-            score,
-            total,
-            percentage:
-              Number(
-                percentage.toFixed(2)
-              )
-          };
-        });
-
       const attendance =
         attendanceResult.rows;
 
@@ -1603,24 +2073,57 @@ app.get(
           x => x.status === "late"
         ).length;
 
-      const totalAttendance =
-        attendance.length;
+      const results =
+        resultResult.rows.map(row => {
+
+          const score =
+            Number(row.score || 0);
+
+          const total =
+            Number(row.total || 100);
+
+          const percentage =
+            total > 0
+              ? (score / total) * 100
+              : 0;
+
+          return {
+            ...row,
+
+            score,
+
+            total,
+
+            percentage:
+              Number(
+                percentage.toFixed(2)
+              )
+          };
+        });
 
       res.json({
+
         student,
 
         attendance,
 
         attendanceSummary: {
-          total: totalAttendance,
+
+          total:
+            attendance.length,
+
           present,
+
           absent,
+
           late
         },
 
         results
       });
+
     } catch (error) {
+
       console.error(
         "Public student error:",
         error
@@ -1635,71 +2138,13 @@ app.get(
 );
 
 /* =========================================================
-   REGENERATE / REVOKE PRIVATE LINK
-========================================================= */
-
-app.post(
-  "/api/students/:id/revoke-link",
-  teacherAuth,
-  async (req, res) => {
-    try {
-      const studentId =
-        Number(req.params.id);
-
-      const check =
-        await pool.query(
-          `
-          SELECT s.id
-          FROM students s
-
-          JOIN classes c
-            ON c.id = s.class_id
-
-          WHERE
-            s.id = $1
-            AND c.teacher_id = $2
-          `,
-          [
-            studentId,
-            req.user.id
-          ]
-        );
-
-      if (!check.rows.length) {
-        return res.status(404).json({
-          error: "Barataan hin argamne."
-        });
-      }
-
-      await pool.query(
-        `
-        UPDATE students
-        SET private_token = NULL
-        WHERE id = $1
-        `,
-        [studentId]
-      );
-
-      res.json({
-        message:
-          "Linkii barataa haqameera."
-      });
-    } catch (error) {
-      res.status(500).json({
-        error:
-          "Link haquu hin dandeenye."
-      });
-    }
-  }
-);
-
-/* =========================================================
-   PUBLIC STUDENT ROUTE
+   PUBLIC STUDENT PAGE
 ========================================================= */
 
 app.get(
   "/s/:token",
   (req, res) => {
+
     res.sendFile(
       path.join(
         __dirname,
@@ -1717,8 +2162,10 @@ app.get(
 app.use(
   "/api",
   (req, res) => {
+
     res.status(404).json({
-      error: "API endpoint hin argamne."
+      error:
+        "API endpoint hin argamne."
     });
   }
 );
@@ -1730,6 +2177,7 @@ app.use(
 app.get(
   "*",
   (req, res) => {
+
     res.sendFile(
       path.join(
         __dirname,
@@ -1745,17 +2193,31 @@ app.get(
 ========================================================= */
 
 async function startServer() {
-  await initDatabase();
 
-  app.listen(
-    PORT,
-    "0.0.0.0",
-    () => {
-      console.log(
-        `Walo-OR running on port ${PORT}`
-      );
-    }
-  );
+  try {
+
+    await initDatabase();
+
+    app.listen(
+      PORT,
+      "0.0.0.0",
+      () => {
+
+        console.log(
+          `Walo-OR running on port ${PORT}`
+        );
+      }
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Server start failed:",
+      error
+    );
+
+    process.exit(1);
+  }
 }
 
 startServer();
