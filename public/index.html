@@ -1,0 +1,2033 @@
+<!DOCTYPE html>
+<html lang="om">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1.0"
+>
+
+<meta
+  name="theme-color"
+  content="#087443"
+>
+
+<title>Walo-OR | Attendance</title>
+
+<style>
+
+:root{
+  --g:#087443;
+  --g2:#0b8b50;
+  --bg:#f3f7f5;
+  --card:#fff;
+  --text:#17231d;
+  --muted:#6b7771;
+  --danger:#c62828;
+  --warn:#e58a00;
+  --line:#e1e8e4;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+button,
+input,
+select{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+  border:0;
+}
+
+.top{
+  background:linear-gradient(
+    135deg,
+    var(--g),
+    #075b37
+  );
+  color:#fff;
+  padding:18px 20px;
+  position:sticky;
+  top:0;
+  z-index:5;
+}
+
+.topbar{
+  max-width:1200px;
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+
+.brand{
+  font-size:23px;
+  font-weight:800;
+}
+
+.brand small{
+  display:block;
+  font-size:11px;
+  font-weight:400;
+  opacity:.85;
+}
+
+.container{
+  max-width:1200px;
+  margin:18px auto;
+  padding:0 14px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:
+    repeat(4,1fr);
+  gap:12px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:15px;
+  padding:16px;
+  box-shadow:
+    0 3px 12px #00000008;
+  margin-bottom:14px;
+}
+
+.stat b{
+  font-size:27px;
+  display:block;
+  margin-top:5px;
+}
+
+.muted{
+  color:var(--muted);
+  font-size:13px;
+}
+
+nav{
+  display:flex;
+  gap:8px;
+  overflow:auto;
+  padding:10px 0;
+}
+
+.navbtn{
+  background:#fff;
+  border:1px solid var(--line);
+  padding:10px 14px;
+  border-radius:10px;
+  color:var(--text);
+  white-space:nowrap;
+}
+
+.navbtn.active{
+  background:var(--g);
+  color:#fff;
+}
+
+h2,
+h3{
+  margin:5px 0 13px;
+}
+
+label{
+  display:block;
+  font-size:13px;
+  font-weight:700;
+  margin:9px 0 5px;
+}
+
+input,
+select{
+  width:100%;
+  padding:11px;
+  border:1px solid #ccd8d2;
+  border-radius:9px;
+  background:#fff;
+  outline:none;
+}
+
+input:focus,
+select:focus{
+  border-color:var(--g);
+}
+
+.btn{
+  padding:11px 15px;
+  border-radius:9px;
+  background:var(--g);
+  color:#fff;
+  font-weight:700;
+}
+
+.btn.secondary{
+  background:#edf4f0;
+  color:var(--g);
+}
+
+.btn.danger{
+  background:var(--danger);
+}
+
+.btn.warn{
+  background:var(--warn);
+}
+
+.btn.sm{
+  padding:8px 10px;
+  font-size:13px;
+}
+
+.row{
+  display:flex;
+  gap:10px;
+  align-items:end;
+  flex-wrap:wrap;
+}
+
+.row>*{
+  flex:1;
+  min-width:150px;
+}
+
+.actions{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th,
+td{
+  padding:10px;
+  border-bottom:1px solid var(--line);
+  text-align:left;
+  font-size:14px;
+}
+
+th{
+  background:#f4f8f6;
+}
+
+.badge{
+  display:inline-block;
+  padding:5px 8px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:700;
+}
+
+.present{
+  background:#dff5e8;
+  color:#087443;
+}
+
+.absent{
+  background:#ffe2e2;
+  color:#b51f1f;
+}
+
+.late{
+  background:#fff0cf;
+  color:#9a6100;
+}
+
+.auth{
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:20px;
+  background:
+    linear-gradient(
+      135deg,
+      #087443,
+      #063e27
+    );
+}
+
+.authbox{
+  width:min(430px,100%);
+  background:#fff;
+  border-radius:18px;
+  padding:25px;
+}
+
+.logo{
+  font-size:30px;
+  color:var(--g);
+  font-weight:900;
+  text-align:center;
+  margin-bottom:4px;
+}
+
+.center{
+  text-align:center;
+}
+
+.hidden{
+  display:none!important;
+}
+
+.msg{
+  padding:10px;
+  border-radius:8px;
+  background:#fff1f1;
+  color:#a52222;
+  margin:10px 0;
+}
+
+.ok{
+  background:#e5f8ec;
+  color:#087443;
+}
+
+.attgrid{
+  display:grid;
+  grid-template-columns:
+    repeat(3,1fr);
+  gap:8px;
+}
+
+.att{
+  padding:10px;
+  border-radius:9px;
+  font-weight:700;
+}
+
+.att.selected{
+  outline:3px solid #b7d9c7;
+}
+
+.att.p{
+  background:#dff5e8;
+  color:#087443;
+}
+
+.att.a{
+  background:#ffe2e2;
+  color:#b51f1f;
+}
+
+.att.l{
+  background:#fff0cf;
+  color:#9a6100;
+}
+
+@media(max-width:800px){
+
+  .grid{
+    grid-template-columns:
+      repeat(2,1fr);
+  }
+
+  .row>*{
+    min-width:100%;
+  }
+
+  table{
+    font-size:12px;
+  }
+
+  th,
+  td{
+    padding:7px;
+  }
+
+  .attgrid{
+    grid-template-columns:
+      1fr 1fr 1fr;
+  }
+}
+
+@media(max-width:480px){
+
+  .grid{
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+  .topbar{
+    align-items:flex-start;
+  }
+
+  .brand{
+    font-size:20px;
+  }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="auth" class="auth">
+
+<div class="authbox">
+
+<div class="logo">
+🎯 Walo-OR
+</div>
+
+<div class="center muted">
+Sirna Hordoffii Argama Barattootaa
+</div>
+
+<div
+  id="authMsg"
+  class="msg hidden">
+</div>
+
+<div id="loginBox">
+
+<h2>Seensa</h2>
+
+<label>Email</label>
+
+<input
+  id="loginEmail"
+  type="email"
+  placeholder="email@example.com"
+>
+
+<label>Password</label>
+
+<input
+  id="loginPass"
+  type="password"
+  placeholder="••••••"
+>
+
+<button
+  class="btn"
+  style="width:100%;margin-top:14px"
+  onclick="login()"
+>
+Seeni
+</button>
+
+<p class="center muted">
+
+Account hin qabduu?
+
+<button
+  class="btn secondary sm"
+  onclick="showRegister()"
+>
+Galmaa'i
+</button>
+
+</p>
+
+</div>
+
+<div id="registerBox" class="hidden">
+
+<h2>Account Uumi</h2>
+
+<label>Maqaa</label>
+
+<input
+  id="regName"
+  placeholder="Maqaa guutuu"
+>
+
+<label>Email</label>
+
+<input
+  id="regEmail"
+  type="email"
+  placeholder="email@example.com"
+>
+
+<label>Password</label>
+
+<input
+  id="regPass"
+  type="password"
+  placeholder="Yoo xiqqaate 6"
+>
+
+<button
+  class="btn"
+  style="width:100%;margin-top:14px"
+  onclick="registerUser()"
+>
+Galmaa'i
+</button>
+
+<p class="center muted">
+
+Account qabdaa?
+
+<button
+  class="btn secondary sm"
+  onclick="showLogin()"
+>
+Seeni
+</button>
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div id="app" class="hidden">
+
+<header class="top">
+
+<div class="topbar">
+
+<div class="brand">
+
+🎯 Walo-OR
+
+<small>
+Attendance Management System
+</small>
+
+</div>
+
+<button
+  class="btn secondary sm"
+  onclick="logout()"
+>
+Ba'i
+</button>
+
+</div>
+
+</header>
+
+
+<main class="container">
+
+<nav>
+
+<button
+  class="navbtn active"
+  data-tab="home"
+  onclick="tab('home')"
+>
+🏠 Home
+</button>
+
+<button
+  class="navbtn"
+  data-tab="classes"
+  onclick="tab('classes')"
+>
+🏫 Class
+</button>
+
+<button
+  class="navbtn"
+  data-tab="students"
+  onclick="tab('students')"
+>
+👨‍🎓 Barattoota
+</button>
+
+<button
+  class="navbtn"
+  data-tab="attendance"
+  onclick="tab('attendance')"
+>
+📅 Attendance
+</button>
+
+<button
+  class="navbtn"
+  data-tab="report"
+  onclick="tab('report')"
+>
+📊 Gabaasa
+</button>
+
+</nav>
+
+
+<section id="home" class="page">
+
+<div class="grid">
+
+<div class="card stat">
+
+<span class="muted">
+🏫 Classes
+</span>
+
+<b id="sClasses">
+0
+</b>
+
+</div>
+
+
+<div class="card stat">
+
+<span class="muted">
+👨‍🎓 Barattoota
+</span>
+
+<b id="sStudents">
+0
+</b>
+
+</div>
+
+
+<div class="card stat">
+
+<span class="muted">
+✅ Har'a Present
+</span>
+
+<b id="sPresent">
+0
+</b>
+
+</div>
+
+
+<div class="card stat">
+
+<span class="muted">
+❌ Har'a Absent
+</span>
+
+<b id="sAbsent">
+0
+</b>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>
+👋 Baga nagaan dhuftan
+</h2>
+
+<p
+  id="welcome"
+  class="muted">
+</p>
+
+<p>
+Walo-OR keessatti barattoota kee galmeessii,
+attendance guyyaa guyyaan kaa'i,
+akkasumas gabaasa argadhu.
+</p>
+
+</div>
+
+</section>
+
+
+<section
+  id="classes"
+  class="page hidden"
+>
+
+<div class="card">
+
+<h2>
+🏫 Class Uumi
+</h2>
+
+<div class="row">
+
+<div>
+
+<label>
+Maqaa Class
+</label>
+
+<input
+  id="className"
+  placeholder="Fakkeenya: Grade 8 A"
+>
+
+</div>
+
+<div>
+
+<label>
+Grade
+</label>
+
+<input
+  id="classGrade"
+  placeholder="Grade 8"
+>
+
+</div>
+
+<div>
+
+<button
+  class="btn"
+  onclick="createClass()"
+>
++ Class Uumi
+</button>
+
+</div>
+
+</div>
+
+<div id="classMsg"></div>
+
+</div>
+
+
+<div class="card">
+
+<h2>
+Class Koo
+</h2>
+
+<div id="classList"></div>
+
+</div>
+
+</section>
+
+
+<section
+  id="students"
+  class="page hidden"
+>
+
+<div class="card">
+
+<h2>
+👨‍🎓 Barataa Galmeessi
+</h2>
+
+<div class="row">
+
+<div>
+
+<label>
+Maqaa Guutuu
+</label>
+
+<input
+  id="stName"
+  placeholder="Abdulhamid Amano"
+>
+
+</div>
+
+<div>
+
+<label>
+Student Code
+</label>
+
+<input
+  id="stCode"
+  placeholder="ST-001"
+>
+
+</div>
+
+<div>
+
+<label>
+Bilbila
+</label>
+
+<input
+  id="stPhone"
+  placeholder="09..."
+>
+
+</div>
+
+<div>
+
+<label>
+Class
+</label>
+
+<select id="stClass"></select>
+
+</div>
+
+<div>
+
+<button
+  class="btn"
+  onclick="createStudent()"
+>
++ Galmeessi
+</button>
+
+</div>
+
+</div>
+
+<div id="studentMsg"></div>
+
+</div>
+
+
+<div class="card">
+
+<div class="row">
+
+<div>
+
+<h2>
+Barattoota
+</h2>
+
+</div>
+
+<div>
+
+<input
+  id="studentSearch"
+  placeholder="🔍 Maqaa ykn code barbaadi"
+  oninput="loadStudents()"
+>
+
+</div>
+
+</div>
+
+<div id="studentTable"></div>
+
+</div>
+
+</section>
+
+
+<section
+  id="attendance"
+  class="page hidden"
+>
+
+<div class="card">
+
+<h2>
+📅 Attendance Galchi
+</h2>
+
+<div class="row">
+
+<div>
+
+<label>
+Class
+</label>
+
+<select
+  id="attClass"
+  onchange="loadAttendance()"
+></select>
+
+</div>
+
+<div>
+
+<label>
+Guyyaa
+</label>
+
+<input
+  id="attDate"
+  type="date"
+  onchange="loadAttendance()"
+>
+
+</div>
+
+<div>
+
+<button
+  class="btn"
+  onclick="saveAttendance()"
+>
+💾 Olkaa'i
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div id="attTable">
+Class fi guyyaa filadhu.
+</div>
+
+</div>
+
+</section>
+
+
+<section
+  id="report"
+  class="page hidden"
+>
+
+<div class="card">
+
+<h2>
+📊 Gabaasa Attendance
+</h2>
+
+<div class="row">
+
+<div>
+
+<label>
+Class
+</label>
+
+<select id="repClass"></select>
+
+</div>
+
+<div>
+
+<label>
+Jalqaba
+</label>
+
+<input
+  id="repFrom"
+  type="date"
+>
+
+</div>
+
+<div>
+
+<label>
+Hanga
+</label>
+
+<input
+  id="repTo"
+  type="date"
+>
+
+</div>
+
+<div>
+
+<button
+  class="btn"
+  onclick="loadReport()"
+>
+Gabaasa Ilaali
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div id="reportTable">
+Gabaasa argachuuf
+filannoo guuti.
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+
+<script>
+
+const $ =
+id => document.getElementById(id);
+
+let token =
+localStorage.getItem("walo_token");
+
+let classes = [];
+
+let attendanceRows = [];
+
+
+function api(url,opt={}){
+
+  opt.headers = {
+    ...(opt.headers || {}),
+    ...(token
+      ? {
+        Authorization:
+        "Bearer " + token
+      }
+      : {})
+  };
+
+  if(
+    opt.body &&
+    typeof opt.body !== "string"
+  ){
+
+    opt.headers["Content-Type"] =
+      "application/json";
+
+    opt.body =
+      JSON.stringify(opt.body);
+  }
+
+  return fetch(url,opt)
+    .then(async r => {
+
+      const d =
+        await r.json()
+        .catch(() => ({}));
+
+      if(!r.ok)
+        throw new Error(
+          d.error ||
+          "Request failed"
+        );
+
+      return d;
+    });
+}
+
+
+function msg(
+  id,
+  text,
+  ok=false
+){
+
+  $(id).className =
+    "msg " + (ok ? "ok" : "");
+
+  $(id).textContent = text;
+}
+
+
+function showLogin(){
+
+  $("loginBox")
+    .classList
+    .remove("hidden");
+
+  $("registerBox")
+    .classList
+    .add("hidden");
+
+  $("authMsg")
+    .classList
+    .add("hidden");
+}
+
+
+function showRegister(){
+
+  $("loginBox")
+    .classList
+    .add("hidden");
+
+  $("registerBox")
+    .classList
+    .remove("hidden");
+
+  $("authMsg")
+    .classList
+    .add("hidden");
+}
+
+
+function authError(e){
+
+  $("authMsg").textContent =
+    e.message;
+
+  $("authMsg").className =
+    "msg";
+}
+
+
+async function login(){
+
+  try{
+
+    const d =
+      await api(
+        "/api/login",
+        {
+          method:"POST",
+
+          body:{
+            email:
+              $("loginEmail").value,
+
+            password:
+              $("loginPass").value
+          }
+        }
+      );
+
+    token = d.token;
+
+    localStorage.setItem(
+      "walo_token",
+      token
+    );
+
+    startApp();
+
+  }catch(e){
+
+    authError(e);
+  }
+}
+
+
+async function registerUser(){
+
+  try{
+
+    const d =
+      await api(
+        "/api/register",
+        {
+          method:"POST",
+
+          body:{
+            name:
+              $("regName").value,
+
+            email:
+              $("regEmail").value,
+
+            password:
+              $("regPass").value
+          }
+        }
+      );
+
+    token = d.token;
+
+    localStorage.setItem(
+      "walo_token",
+      token
+    );
+
+    startApp();
+
+  }catch(e){
+
+    authError(e);
+  }
+}
+
+
+function logout(){
+
+  localStorage.removeItem(
+    "walo_token"
+  );
+
+  token = null;
+
+  location.reload();
+}
+
+
+function tab(id){
+
+  document
+    .querySelectorAll(".page")
+    .forEach(
+      x =>
+        x.classList
+         .add("hidden")
+    );
+
+  $(id)
+    .classList
+    .remove("hidden");
+
+  document
+    .querySelectorAll(".navbtn")
+    .forEach(
+      x =>
+        x.classList.toggle(
+          "active",
+          x.dataset.tab === id
+        )
+    );
+
+  if(id === "classes")
+    loadClasses();
+
+  if(id === "students"){
+    loadClasses();
+    loadStudents();
+  }
+
+  if(id === "attendance"){
+    loadClasses();
+    loadAttendance();
+  }
+
+  if(id === "report")
+    loadClasses();
+}
+
+
+async function startApp(){
+
+  try{
+
+    const me =
+      await api("/api/me");
+
+    $("auth")
+      .classList
+      .add("hidden");
+
+    $("app")
+      .classList
+      .remove("hidden");
+
+    $("welcome").textContent =
+      `Baga nagaan dhuftan, ${me.name}!`;
+
+    const t = new Date();
+
+    $("attDate").value =
+      t.toISOString().slice(0,10);
+
+    $("repTo").value =
+      t.toISOString().slice(0,10);
+
+    const f = new Date();
+
+    f.setDate(
+      t.getDate() - 30
+    );
+
+    $("repFrom").value =
+      f.toISOString().slice(0,10);
+
+    loadDashboard();
+    loadClasses();
+
+  }catch(e){
+
+    localStorage.removeItem(
+      "walo_token"
+    );
+
+    token = null;
+  }
+}
+
+
+async function loadDashboard(){
+
+  const d =
+    await api(
+      "/api/dashboard"
+    );
+
+  $("sClasses").textContent =
+    d.classes;
+
+  $("sStudents").textContent =
+    d.students;
+
+  $("sPresent").textContent =
+    d.today_present;
+
+  $("sAbsent").textContent =
+    d.today_absent;
+}
+
+
+async function loadClasses(){
+
+  classes =
+    await api("/api/classes");
+
+  renderClasses();
+
+  fillSelects();
+}
+
+
+function fillSelects(){
+
+  [
+    "stClass",
+    "attClass",
+    "repClass"
+  ].forEach(id => {
+
+    const el = $(id);
+
+    const old =
+      el.value;
+
+    el.innerHTML =
+      '<option value="">-- Filadhu --</option>' +
+
+      classes
+        .map(
+          c =>
+            `<option value="${c.id}">
+              ${esc(c.name)}
+              ${c.grade
+                ? " - " + esc(c.grade)
+                : ""}
+            </option>`
+        )
+        .join("");
+
+    if(old)
+      el.value = old;
+  });
+}
+
+
+function renderClasses(){
+
+  $("classList").innerHTML =
+    classes.length
+
+      ? `
+      <table>
+
+      <thead>
+
+      <tr>
+        <th>Class</th>
+        <th>Grade</th>
+        <th>Barattoota</th>
+        <th></th>
+      </tr>
+
+      </thead>
+
+      <tbody>
+
+      ${
+        classes
+          .map(
+            c =>
+              `
+              <tr>
+
+              <td>
+                ${esc(c.name)}
+              </td>
+
+              <td>
+                ${esc(c.grade || "-")}
+              </td>
+
+              <td>
+                ${c.student_count}
+              </td>
+
+              <td>
+
+              <button
+                class="btn danger sm"
+                onclick="deleteClass(${c.id})"
+              >
+                Haqi
+              </button>
+
+              </td>
+
+              </tr>
+              `
+          )
+          .join("")
+      }
+
+      </tbody>
+
+      </table>
+      `
+
+      :
+
+      "<p class='muted'>Class hin jiru.</p>";
+}
+
+
+async function createClass(){
+
+  try{
+
+    await api(
+      "/api/classes",
+      {
+        method:"POST",
+
+        body:{
+          name:
+            $("className").value,
+
+          grade:
+            $("classGrade").value
+        }
+      }
+    );
+
+    $("className").value="";
+    $("classGrade").value="";
+
+    msg(
+      "classMsg",
+      "Class uumame.",
+      true
+    );
+
+    loadClasses();
+    loadDashboard();
+
+  }catch(e){
+
+    msg(
+      "classMsg",
+      e.message
+    );
+  }
+}
+
+
+async function deleteClass(id){
+
+  if(
+    !confirm(
+      "Class kana haqaa?"
+    )
+  )
+    return;
+
+  try{
+
+    await api(
+      "/api/classes/" + id,
+      {
+        method:"DELETE"
+      }
+    );
+
+    loadClasses();
+    loadDashboard();
+
+  }catch(e){
+
+    alert(e.message);
+  }
+}
+
+
+async function createStudent(){
+
+  try{
+
+    await api(
+      "/api/students",
+      {
+        method:"POST",
+
+        body:{
+          fullName:
+            $("stName").value,
+
+          studentCode:
+            $("stCode").value,
+
+          phone:
+            $("stPhone").value,
+
+          classId:
+            $("stClass").value
+        }
+      }
+    );
+
+    $("stName").value="";
+    $("stCode").value="";
+    $("stPhone").value="";
+
+    msg(
+      "studentMsg",
+      "Barataan galmaa'e.",
+      true
+    );
+
+    loadStudents();
+    loadClasses();
+    loadDashboard();
+
+  }catch(e){
+
+    msg(
+      "studentMsg",
+      e.message
+    );
+  }
+}
+
+
+async function loadStudents(){
+
+  let u =
+    "/api/students?";
+
+  if($("stClass").value){
+
+    u +=
+      "classId=" +
+      encodeURIComponent(
+        $("stClass").value
+      ) +
+      "&";
+  }
+
+  if($("studentSearch").value){
+
+    u +=
+      "search=" +
+      encodeURIComponent(
+        $("studentSearch").value
+      );
+  }
+
+  const rows =
+    await api(u);
+
+  $("studentTable").innerHTML =
+    rows.length
+
+      ? `
+      <table>
+
+      <thead>
+
+      <tr>
+        <th>Maqaa</th>
+        <th>Code</th>
+        <th>Class</th>
+        <th>Bilbila</th>
+        <th></th>
+      </tr>
+
+      </thead>
+
+      <tbody>
+
+      ${
+        rows.map(
+          s =>
+            `
+            <tr>
+
+            <td>
+              ${esc(s.full_name)}
+            </td>
+
+            <td>
+              ${esc(s.student_code || "-")}
+            </td>
+
+            <td>
+              ${esc(s.class_name || "-")}
+            </td>
+
+            <td>
+              ${esc(s.phone || "-")}
+            </td>
+
+            <td>
+
+            <button
+              class="btn danger sm"
+              onclick="deleteStudent(${s.id})"
+            >
+              Haqi
+            </button>
+
+            </td>
+
+            </tr>
+            `
+        ).join("")
+      }
+
+      </tbody>
+
+      </table>
+      `
+
+      :
+
+      "<p class='muted'>Barataan hin argamne.</p>";
+}
+
+
+async function deleteStudent(id){
+
+  if(
+    !confirm(
+      "Barataa kana haqaa?"
+    )
+  )
+    return;
+
+  try{
+
+    await api(
+      "/api/students/" + id,
+      {
+        method:"DELETE"
+      }
+    );
+
+    loadStudents();
+    loadClasses();
+    loadDashboard();
+
+  }catch(e){
+
+    alert(e.message);
+  }
+}
+
+
+async function loadAttendance(){
+
+  const cid =
+    $("attClass").value;
+
+  const date =
+    $("attDate").value;
+
+  if(!cid || !date){
+
+    $("attTable").textContent =
+      "Class fi guyyaa filadhu.";
+
+    return;
+  }
+
+  try{
+
+    attendanceRows =
+      await api(
+        `/api/attendance?classId=${cid}&date=${date}`
+      );
+
+    renderAttendance();
+
+  }catch(e){
+
+    $("attTable").textContent =
+      e.message;
+  }
+}
+
+
+function renderAttendance(){
+
+  $("attTable").innerHTML =
+    attendanceRows.length
+
+      ? `
+      <table>
+
+      <thead>
+
+      <tr>
+        <th>#</th>
+        <th>Barataa</th>
+        <th>Code</th>
+        <th>Haala</th>
+        <th>Note</th>
+      </tr>
+
+      </thead>
+
+      <tbody>
+
+      ${
+        attendanceRows
+          .map(
+            (s,i) =>
+              `
+              <tr>
+
+              <td>
+                ${i+1}
+              </td>
+
+              <td>
+                <b>
+                  ${esc(s.full_name)}
+                </b>
+              </td>
+
+              <td>
+                ${esc(
+                  s.student_code || "-"
+                )}
+              </td>
+
+              <td>
+
+              <div class="attgrid">
+
+              ${
+                [
+                  "present",
+                  "absent",
+                  "late"
+                ]
+                .map(
+                  x =>
+                    `
+                    <button
+                      class="
+                        att
+                        ${
+                          x==="present"
+                            ? "p"
+                            : x==="absent"
+                            ? "a"
+                            : "l"
+                        }
+
+                        ${
+                          s.status===x
+                            ? "selected"
+                            : ""
+                        }
+                      "
+
+                      onclick="
+                        setStatus(
+                          ${i},
+                          '${x}'
+                        )
+                      "
+                    >
+
+                    ${
+                      x==="present"
+                        ? "✅ Present"
+                        : x==="absent"
+                        ? "❌ Absent"
+                        : "⏰ Late"
+                    }
+
+                    </button>
+                    `
+                )
+                .join("")
+              }
+
+              </div>
+
+              </td>
+
+              <td>
+
+              <input
+                value="${esc(s.note || "")}"
+                onchange="
+                  attendanceRows[
+                    ${i}
+                  ].note=this.value
+                "
+                placeholder="Yaada"
+              >
+
+              </td>
+
+              </tr>
+              `
+          )
+          .join("")
+      }
+
+      </tbody>
+
+      </table>
+      `
+
+      :
+
+      "<p class='muted'>Barataan hin jiru.</p>";
+}
+
+
+function setStatus(i,status){
+
+  attendanceRows[i].status =
+    status;
+
+  renderAttendance();
+}
+
+
+async function saveAttendance(){
+
+  if(!attendanceRows.length){
+
+    alert(
+      "Barattoota hin jiru."
+    );
+
+    return;
+  }
+
+  try{
+
+    await api(
+      "/api/attendance",
+      {
+        method:"POST",
+
+        body:{
+          classId:
+            $("attClass").value,
+
+          date:
+            $("attDate").value,
+
+          records:
+            attendanceRows.map(
+              x => ({
+                studentId:x.id,
+                status:x.status,
+                note:x.note
+              })
+            )
+        }
+      }
+    );
+
+    alert(
+      "✅ Attendance olkaa'ame."
+    );
+
+    loadDashboard();
+
+  }catch(e){
+
+    alert(e.message);
+  }
+}
+
+
+async function loadReport(){
+
+  const cid =
+    $("repClass").value;
+
+  const from =
+    $("repFrom").value;
+
+  const to =
+    $("repTo").value;
+
+  if(
+    !cid ||
+    !from ||
+    !to
+  ){
+
+    return alert(
+      "Class, jalqaba fi hanga guuti."
+    );
+  }
+
+  try{
+
+    const rows =
+      await api(
+        `/api/report?classId=${cid}&from=${from}&to=${to}`
+      );
+
+    $("reportTable").innerHTML =
+      rows.length
+
+        ? `
+        <table>
+
+        <thead>
+
+        <tr>
+          <th>Barataa</th>
+          <th>Guyyaa</th>
+          <th>Present</th>
+          <th>Absent</th>
+          <th>Late</th>
+          <th>%</th>
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        ${
+          rows.map(
+            s =>
+              `
+              <tr>
+
+              <td>
+
+                <b>
+                  ${esc(
+                    s.full_name
+                  )}
+                </b>
+
+                <br>
+
+                <span class="muted">
+                  ${esc(
+                    s.student_code || ""
+                  )}
+                </span>
+
+              </td>
+
+              <td>
+                ${s.total_days}
+              </td>
+
+              <td>
+
+                <span
+                  class="badge present"
+                >
+                  ${s.present}
+                </span>
+
+              </td>
+
+              <td>
+
+                <span
+                  class="badge absent"
+                >
+                  ${s.absent}
+                </span>
+
+              </td>
+
+              <td>
+
+                <span
+                  class="badge late"
+                >
+                  ${s.late}
+                </span>
+
+              </td>
+
+              <td>
+                <b>
+                  ${s.percentage}%
+                </b>
+              </td>
+
+              </tr>
+              `
+          ).join("")
+        }
+
+        </tbody>
+
+        </table>
+        `
+
+        :
+
+        "<p class='muted'>Data hin jiru.</p>";
+
+  }catch(e){
+
+    alert(e.message);
+  }
+}
+
+
+function esc(v){
+
+  return String(v ?? "")
+    .replace(
+      /[&<>"']/g,
+      m =>
+        ({
+          "&":"&amp;",
+          "<":"&lt;",
+          ">":"&gt;",
+          '"':"&quot;",
+          "'":"&#039;"
+        }[m])
+    );
+}
+
+
+if(token)
+  startApp();
+
+</script>
+
+</body>
+
+  </html>
