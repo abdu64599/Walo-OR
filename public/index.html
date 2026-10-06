@@ -3,28 +3,30 @@
 <head>
   <meta charset="UTF-8">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-  <meta name="theme-color" content="#087443">
+  <meta
+    name="theme-color"
+    content="#087443"
+  >
 
   <title>Walo-OR</title>
 
   <style>
     * {
       box-sizing: border-box;
-    }
-
-    html,
-    body {
       margin: 0;
       padding: 0;
-      min-height: 100%;
     }
 
     body {
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: Arial, sans-serif;
       background: #f3f7f5;
-      color: #17201c;
+      color: #17231d;
+      min-height: 100vh;
     }
 
     button,
@@ -36,11 +38,18 @@
 
     button {
       cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
     }
 
     .hidden {
       display: none !important;
+    }
+
+    .page {
+      display: none !important;
+    }
+
+    .page.active {
+      display: block !important;
     }
 
     /* =========================
@@ -53,77 +62,67 @@
       align-items: center;
       justify-content: center;
       padding: 20px;
-
       background:
         linear-gradient(
           135deg,
           #087443,
-          #176b45
+          #176b45,
+          #0b5737
         );
     }
 
     .auth-card {
       width: 100%;
       max-width: 450px;
-
       background: white;
-
       border-radius: 22px;
-
-      padding: 28px;
-
-      box-shadow:
-        0 20px 60px
-        rgba(0, 0, 0, .20);
+      padding: 30px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.18);
     }
 
     .logo {
-      width: 65px;
-      height: 65px;
-
-      border-radius: 18px;
-
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 15px;
+      border-radius: 20px;
       background: #087443;
       color: white;
-
       display: flex;
       align-items: center;
       justify-content: center;
-
-      font-size: 30px;
-
-      margin: 0 auto 12px;
+      font-size: 36px;
+      font-weight: bold;
     }
 
     .auth-card h1 {
       text-align: center;
-      margin: 0;
       color: #087443;
+      margin-bottom: 6px;
     }
 
-    .subtitle {
+    .auth-card .subtitle {
       text-align: center;
-      color: #66736d;
-      margin: 8px 0 20px;
+      color: #66756d;
+      margin-bottom: 25px;
+      line-height: 1.5;
     }
 
     .tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      display: flex;
       gap: 8px;
-
-      margin-bottom: 20px;
+      margin-bottom: 22px;
+      background: #eef4f1;
+      padding: 5px;
+      border-radius: 12px;
     }
 
     .tab {
-      border: 0;
-      padding: 12px;
-
-      border-radius: 10px;
-
-      background: #e7efeb;
-      color: #176b45;
-
+      flex: 1;
+      border: none;
+      padding: 11px;
+      border-radius: 9px;
+      background: transparent;
+      color: #456157;
       font-weight: bold;
     }
 
@@ -133,110 +132,101 @@
     }
 
     .form-group {
-      margin-bottom: 14px;
+      margin-bottom: 15px;
     }
 
-    label {
+    .form-group label {
       display: block;
-
-      margin-bottom: 6px;
-
       font-weight: bold;
-      font-size: 14px;
+      margin-bottom: 7px;
+      color: #30443a;
     }
 
     input,
     select,
     textarea {
       width: 100%;
-
-      border: 1px solid #ccd8d2;
-
+      border: 1px solid #d4dfda;
       border-radius: 10px;
-
-      padding: 12px;
-
-      background: white;
-
+      padding: 12px 13px;
       outline: none;
+      background: white;
     }
 
     input:focus,
     select:focus,
     textarea:focus {
       border-color: #087443;
-
-      box-shadow:
-        0 0 0 3px
-        rgba(8, 116, 67, .10);
+      box-shadow: 0 0 0 3px rgba(8,116,67,.10);
     }
 
     textarea {
-      min-height: 90px;
       resize: vertical;
+      min-height: 90px;
     }
 
-    .primary-btn {
-      border: 0;
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-weight: bold;
+      transition: .2s;
+    }
 
-      border-radius: 11px;
+    .btn:hover {
+      transform: translateY(-1px);
+    }
 
-      padding: 13px;
-
+    .btn-primary {
       background: #087443;
       color: white;
-
-      font-weight: bold;
     }
 
-    .full-btn {
+    .btn-secondary {
+      background: #e8f1ed;
+      color: #087443;
+    }
+
+    .btn-danger {
+      background: #c62828;
+      color: white;
+    }
+
+    .btn-full {
       width: 100%;
     }
 
-    .secondary-btn {
-      border: 0;
-
+    .auth-message {
+      margin-top: 15px;
+      padding: 10px;
       border-radius: 9px;
+      display: none;
+      line-height: 1.4;
+    }
 
-      padding: 10px 13px;
+    .auth-message.error {
+      display: block;
+      background: #ffebee;
+      color: #b71c1c;
+    }
 
-      background: #e8f0ec;
+    .auth-message.success {
+      display: block;
+      background: #e8f5e9;
+      color: #1b5e20;
+    }
+
+    .switch-form {
+      text-align: center;
+      margin-top: 18px;
+      color: #66756d;
+    }
+
+    .switch-form button {
+      border: none;
+      background: transparent;
       color: #087443;
-
       font-weight: bold;
-    }
-
-    .danger-btn {
-      border: 0;
-
-      border-radius: 9px;
-
-      padding: 9px 12px;
-
-      background: #ffe6e6;
-      color: #b42318;
-
-      font-weight: bold;
-    }
-
-    .message {
-      padding: 10px 12px;
-
-      border-radius: 9px;
-
-      margin-bottom: 14px;
-
-      font-size: 14px;
-    }
-
-    .message.error {
-      background: #ffe9e9;
-      color: #a71919;
-    }
-
-    .message.success {
-      background: #e4f6eb;
-      color: #086438;
     }
 
     /* =========================
@@ -247,374 +237,449 @@
       min-height: 100vh;
     }
 
-    .app-layout {
-      display: flex;
-      min-height: 100vh;
-    }
-
     .sidebar {
-      width: 250px;
-
-      background: #087443;
-      color: white;
-
-      padding: 18px 12px;
-
       position: fixed;
-
+      left: 0;
       top: 0;
       bottom: 0;
-      left: 0;
-
-      overflow-y: auto;
-
+      width: 250px;
+      background: #087443;
+      color: white;
       z-index: 1000;
+      overflow-y: auto;
     }
 
     .brand {
-      font-size: 23px;
+      padding: 24px 20px;
+      border-bottom: 1px solid rgba(255,255,255,.15);
+    }
+
+    .brand-title {
+      font-size: 25px;
       font-weight: bold;
+    }
 
-      padding: 12px;
-
-      margin-bottom: 15px;
+    .brand-subtitle {
+      font-size: 12px;
+      opacity: .8;
+      margin-top: 4px;
     }
 
     .user-box {
-      background:
-        rgba(255,255,255,.10);
-
-      border-radius: 12px;
-
-      padding: 12px;
-
-      margin-bottom: 15px;
+      padding: 18px 20px;
+      border-bottom: 1px solid rgba(255,255,255,.15);
     }
 
-    .user-box small {
+    .user-name {
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .user-role {
+      margin-top: 4px;
+      font-size: 12px;
       opacity: .8;
     }
 
-    .nav-btn {
-      width: 100%;
+    .nav {
+      padding: 15px 10px;
+    }
 
-      border: 0;
-
-      background: transparent;
-      color: white;
-
-      text-align: left;
-
-      padding: 12px;
-
-      border-radius: 10px;
-
-      margin-bottom: 5px;
-
+    .nav-title {
+      padding: 8px 12px;
+      font-size: 11px;
+      text-transform: uppercase;
+      opacity: .65;
       font-weight: bold;
     }
 
-    .nav-btn:hover,
-    .nav-btn.active {
-      background:
-        rgba(255,255,255,.16);
+    .nav button {
+      width: 100%;
+      text-align: left;
+      border: none;
+      background: transparent;
+      color: white;
+      padding: 12px;
+      border-radius: 9px;
+      margin-bottom: 4px;
+      font-weight: 600;
     }
 
-    .logout {
+    .nav button:hover,
+    .nav button.active {
+      background: rgba(255,255,255,.15);
+    }
+
+    .logout-btn {
       margin-top: 15px;
-      background: #b42318;
+      background: rgba(255,255,255,.12) !important;
     }
 
     .main {
       margin-left: 250px;
-
-      width: calc(100% - 250px);
-
-      padding: 25px;
+      min-height: 100vh;
     }
 
     .topbar {
+      height: 72px;
+      background: white;
+      border-bottom: 1px solid #e2eae6;
       display: flex;
-
-      justify-content: space-between;
       align-items: center;
-
-      gap: 12px;
-
-      margin-bottom: 22px;
+      justify-content: space-between;
+      padding: 0 25px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
     .topbar h2 {
-      margin: 0;
       color: #087443;
+      font-size: 21px;
     }
 
-    .page {
-      display: none !important;
+    .menu-btn {
+      display: none;
+      border: none;
+      background: #087443;
+      color: white;
+      padding: 8px 11px;
+      border-radius: 8px;
+      font-size: 20px;
     }
 
-    .page.active {
-      display: block !important;
+    .content {
+      padding: 25px;
+      max-width: 1400px;
+      margin: auto;
     }
 
     /* =========================
-       CARDS
+       DASHBOARD
     ========================= */
+
+    .welcome {
+      background: linear-gradient(135deg,#087443,#176b45);
+      color: white;
+      padding: 25px;
+      border-radius: 18px;
+      margin-bottom: 22px;
+    }
+
+    .welcome h2 {
+      margin-bottom: 8px;
+    }
+
+    .welcome p {
+      line-height: 1.6;
+      opacity: .95;
+    }
 
     .stats-grid {
       display: grid;
-
-      grid-template-columns:
-        repeat(4, 1fr);
-
-      gap: 15px;
+      grid-template-columns: repeat(4,1fr);
+      gap: 16px;
+      margin-bottom: 25px;
     }
 
     .stat-card {
       background: white;
-
-      padding: 20px;
-
       border-radius: 15px;
-
-      box-shadow:
-        0 5px 20px
-        rgba(0,0,0,.06);
+      padding: 20px;
+      border: 1px solid #e1eae5;
+      box-shadow: 0 4px 15px rgba(0,0,0,.04);
     }
 
-    .stat-card .number {
-      font-size: 30px;
+    .stat-icon {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
 
-      font-weight: bold;
+    .stat-label {
+      color: #718078;
+      font-size: 14px;
+    }
 
+    .stat-value {
       color: #087443;
-    }
-
-    .stat-card .label {
-      color: #66736d;
+      font-size: 28px;
+      font-weight: bold;
       margin-top: 5px;
     }
 
-    .panel {
+    .card {
       background: white;
-
+      border: 1px solid #e1eae5;
       border-radius: 15px;
-
       padding: 20px;
-
       margin-bottom: 20px;
-
-      box-shadow:
-        0 5px 20px
-        rgba(0,0,0,.06);
+      box-shadow: 0 4px 15px rgba(0,0,0,.03);
     }
 
-    .panel h3 {
-      margin-top: 0;
+    .card h3 {
       color: #087443;
+      margin-bottom: 15px;
     }
+
+    /* =========================
+       GRID / FORM
+    ========================= */
 
     .form-grid {
       display: grid;
-
-      grid-template-columns:
-        repeat(2, 1fr);
-
-      gap: 12px;
+      grid-template-columns: repeat(2,1fr);
+      gap: 15px;
     }
 
     .form-grid-3 {
       display: grid;
-
-      grid-template-columns:
-        repeat(3, 1fr);
-
-      gap: 12px;
+      grid-template-columns: repeat(3,1fr);
+      gap: 15px;
     }
 
+    .form-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 15px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+
+    /* =========================
+       TABLE
+    ========================= */
+
     .table-wrap {
+      width: 100%;
       overflow-x: auto;
     }
 
     table {
       width: 100%;
-
       border-collapse: collapse;
-
       min-width: 650px;
     }
 
     th,
     td {
-      padding: 11px;
-
-      border-bottom:
-        1px solid #e2e9e5;
-
+      padding: 12px 10px;
+      border-bottom: 1px solid #e7eeea;
       text-align: left;
-
-      vertical-align: middle;
     }
 
     th {
-      background: #edf5f1;
-      color: #176b45;
+      background: #f2f7f4;
+      color: #315144;
+      font-size: 13px;
     }
 
-    .status-present {
+    td {
+      font-size: 14px;
+    }
+
+    tr:hover td {
+      background: #fafcfb;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .badge-present {
+      background: #e5f6eb;
       color: #087443;
-      font-weight: bold;
     }
 
-    .status-absent {
-      color: #b42318;
-      font-weight: bold;
+    .badge-absent {
+      background: #ffebee;
+      color: #c62828;
     }
 
-    .status-late {
-      color: #9a6700;
-      font-weight: bold;
+    .badge-late {
+      background: #fff4d6;
+      color: #8a6100;
     }
 
     .empty {
+      padding: 30px;
       text-align: center;
-
       color: #718078;
-
-      padding: 25px;
     }
 
-    .small {
-      font-size: 12px;
-      color: #6d7973;
+    /* =========================
+       STUDENT HOME
+    ========================= */
+
+    .student-hero {
+      background: linear-gradient(135deg,#087443,#176b45);
+      color: white;
+      padding: 30px;
+      border-radius: 20px;
+      margin-bottom: 22px;
     }
 
-    .link-box {
-      display: flex;
-      gap: 5px;
+    .student-hero h1 {
+      margin-bottom: 8px;
     }
 
-    .link-box input {
-      min-width: 220px;
+    .student-hero p {
+      opacity: .92;
+      line-height: 1.6;
     }
 
-    /* STUDENT HOME CARDS */
+    .student-info {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .student-info-box {
+      background: rgba(255,255,255,.12);
+      padding: 15px;
+      border-radius: 12px;
+    }
+
+    .student-info-box small {
+      display: block;
+      opacity: .75;
+      margin-bottom: 4px;
+    }
 
     .student-cards {
       display: grid;
-
-      grid-template-columns:
-        repeat(2, 1fr);
-
-      gap: 15px;
-
-      margin-top: 20px;
+      grid-template-columns: repeat(2,1fr);
+      gap: 18px;
     }
 
     .student-action {
       border: 1px solid #dce8e2;
-
       background: white;
-
-      border-radius: 15px;
-
-      padding: 20px;
-
+      border-radius: 17px;
+      padding: 25px;
       text-align: left;
-
-      box-shadow:
-        0 5px 20px
-        rgba(0,0,0,.05);
-
-      transition: .15s;
+      box-shadow: 0 5px 20px rgba(0,0,0,.05);
+      transition: .2s;
     }
 
     .student-action:hover {
-      transform: translateY(-2px);
-
+      transform: translateY(-3px);
       border-color: #087443;
-
-      box-shadow:
-        0 8px 25px
-        rgba(0,0,0,.10);
     }
 
     .student-action .icon {
-      font-size: 30px;
-      margin-bottom: 10px;
+      font-size: 32px;
+      margin-bottom: 12px;
     }
 
-    .student-action strong {
-      display: block;
-
+    .student-action h3 {
       color: #087443;
-
-      margin-bottom: 5px;
+      margin-bottom: 6px;
     }
 
-    /* MOBILE */
+    .student-action p {
+      color: #718078;
+      line-height: 1.5;
+    }
 
-    .mobile-menu {
-      display: none;
+    /* =========================
+       TOAST
+    ========================= */
 
-      border: 0;
-
-      background: #087443;
+    #toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 3000;
+      min-width: 250px;
+      max-width: 90%;
+      background: #17231d;
       color: white;
-
-      padding: 10px 13px;
-
-      border-radius: 9px;
-
-      font-size: 20px;
+      padding: 14px 17px;
+      border-radius: 10px;
+      display: none;
+      box-shadow: 0 10px 30px rgba(0,0,0,.2);
     }
 
-    @media (max-width: 900px) {
+    #toast.show {
+      display: block;
+    }
 
+    #toast.success {
+      background: #087443;
+    }
+
+    #toast.error {
+      background: #b71c1c;
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 1000px) {
       .stats-grid {
-        grid-template-columns:
-          repeat(2, 1fr);
+        grid-template-columns: repeat(2,1fr);
+      }
+
+      .form-grid-4 {
+        grid-template-columns: repeat(2,1fr);
       }
 
       .form-grid-3 {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2,1fr);
       }
     }
 
-    @media (max-width: 700px) {
-
+    @media (max-width: 750px) {
       .sidebar {
-        transform:
-          translateX(-100%);
-
-        transition: .2s;
+        transform: translateX(-100%);
+        transition: .25s;
       }
 
       .sidebar.open {
-        transform:
-          translateX(0);
+        transform: translateX(0);
       }
 
       .main {
         margin-left: 0;
-
-        width: 100%;
-
-        padding: 15px;
       }
 
-      .mobile-menu {
+      .menu-btn {
         display: block;
       }
 
       .topbar {
-        align-items: center;
+        padding: 0 15px;
+      }
+
+      .content {
+        padding: 15px;
+      }
+
+      .form-grid,
+      .form-grid-3,
+      .form-grid-4,
+      .student-cards,
+      .student-info {
+        grid-template-columns: 1fr;
       }
 
       .stats-grid {
-        grid-template-columns:
-          1fr 1fr;
-
+        grid-template-columns: repeat(2,1fr);
         gap: 10px;
       }
 
@@ -622,31 +687,27 @@
         padding: 15px;
       }
 
-      .form-grid {
-        grid-template-columns: 1fr;
+      .stat-value {
+        font-size: 23px;
       }
 
-      .student-cards {
-        grid-template-columns: 1fr;
-      }
-
-      .auth-card {
+      .welcome,
+      .student-hero {
         padding: 20px;
-      }
-
-      .link-box {
-        flex-direction: column;
-      }
-
-      .link-box input {
-        min-width: 0;
       }
     }
 
-    @media (max-width: 420px) {
+    @media (max-width: 450px) {
+      .auth-card {
+        padding: 22px 17px;
+      }
 
       .stats-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .topbar h2 {
+        font-size: 17px;
       }
     }
   </style>
@@ -654,43 +715,37 @@
 
 <body>
 
-<!-- ==================================================
+<!-- =====================================================
      AUTH PAGE
-================================================== -->
+===================================================== -->
 
 <div id="authPage">
 
   <div class="auth-card">
 
-    <div class="logo">
-      🎓
-    </div>
+    <div class="logo">OR</div>
 
-    <h1>
-      Walo-OR
-    </h1>
+    <h1>Walo-OR</h1>
 
-    <div class="subtitle">
-      Sirna Attendance fi Bu'aa Barattootaa
-    </div>
-
-    <div id="authMessage"></div>
+    <p class="subtitle">
+      Sirna Attendance fi Bu'aa Qormaataa
+    </p>
 
     <div class="tabs">
 
       <button
-        type="button"
-        class="tab active"
         id="teacherTab"
+        class="tab active"
+        type="button"
         onclick="showAuth('teacher')"
       >
         👨‍🏫 Barsiisaa
       </button>
 
       <button
-        type="button"
-        class="tab"
         id="studentTab"
+        class="tab"
+        type="button"
         onclick="showAuth('student')"
       >
         👨‍🎓 Barataa
@@ -698,336 +753,325 @@
 
     </div>
 
-    <!-- TEACHER -->
+    <!-- ================= TEACHER AUTH ================= -->
 
     <div id="teacherAuth">
 
-      <div id="teacherLoginForm">
+      <form id="teacherLoginForm">
 
         <div class="form-group">
-
-          <label>
-            Email
-          </label>
-
+          <label>Email</label>
           <input
-            id="loginEmail"
+            id="teacherLoginEmail"
             type="email"
             placeholder="Email kee"
-            autocomplete="email"
+            required
           >
-
         </div>
 
         <div class="form-group">
-
-          <label>
-            Password
-          </label>
-
+          <label>Password</label>
           <input
-            id="loginPassword"
+            id="teacherLoginPassword"
             type="password"
             placeholder="Password"
-            autocomplete="current-password"
+            required
           >
-
         </div>
 
         <button
-          type="button"
-          class="primary-btn full-btn"
-          onclick="teacherLogin()"
+          class="btn btn-primary btn-full"
+          type="submit"
         >
-          Seeni
+          🔐 Seeni
         </button>
 
-        <p
-          class="small"
-          style="text-align:center"
-        >
-          Account hin qabduu?
-
-          <a
-            href="#"
-            onclick="toggleTeacherForm();return false;"
-          >
-            Account Uumi
-          </a>
-        </p>
-
-      </div>
-
-      <!-- REGISTER -->
+      </form>
 
       <div
-        id="teacherRegisterForm"
+        id="teacherRegisterBox"
         class="hidden"
       >
 
-        <div class="form-group">
+        <form id="teacherRegisterForm">
 
-          <label>
-            Maqaa
-          </label>
+          <div class="form-group">
+            <label>Maqaa</label>
+            <input
+              id="teacherRegisterName"
+              type="text"
+              placeholder="Maqaa kee"
+              required
+            >
+          </div>
 
-          <input
-            id="registerName"
-            placeholder="Maqaa kee"
+          <div class="form-group">
+            <label>Email</label>
+            <input
+              id="teacherRegisterEmail"
+              type="email"
+              placeholder="Email kee"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label>Password</label>
+            <input
+              id="teacherRegisterPassword"
+              type="password"
+              placeholder="Password"
+              minlength="6"
+              required
+            >
+          </div>
+
+          <button
+            class="btn btn-primary btn-full"
+            type="submit"
           >
+            📝 Account Uumi
+          </button>
 
-        </div>
+        </form>
+
+      </div>
+
+      <div class="switch-form">
+
+        <span id="registerText">
+          Account hin qabduu?
+        </span>
+
+        <button
+          type="button"
+          onclick="toggleTeacherForm()"
+        >
+          Galmaa'i
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- ================= STUDENT AUTH ================= -->
+
+    <div id="studentAuth" class="hidden">
+
+      <form id="studentLoginForm">
 
         <div class="form-group">
 
           <label>
-            Email
+            Student Code
           </label>
 
           <input
-            id="registerEmail"
-            type="email"
-            placeholder="Email kee"
-          >
-
-        </div>
-
-        <div class="form-group">
-
-          <label>
-            Password
-          </label>
-
-          <input
-            id="registerPassword"
-            type="password"
-            placeholder="Password xiqqaa 6"
+            id="studentCodeLogin"
+            type="text"
+            placeholder="Fakkeenya: ST001"
+            autocomplete="off"
+            required
           >
 
         </div>
 
         <button
-          type="button"
-          class="primary-btn full-btn"
-          onclick="teacherRegister()"
+          class="btn btn-primary btn-full"
+          type="submit"
         >
-          Account Uumi
+          🎓 Seeni
         </button>
 
-        <p
-          class="small"
-          style="text-align:center"
-        >
-          Account qabdaa?
-
-          <a
-            href="#"
-            onclick="toggleTeacherForm();return false;"
-          >
-            Seeni
-          </a>
-        </p>
-
-      </div>
-
-    </div>
-
-    <!-- STUDENT -->
-
-    <div
-      id="studentAuth"
-      class="hidden"
-    >
-
-      <div class="form-group">
-
-        <label>
-          Student Code
-        </label>
-
-        <input
-          id="studentCodeLogin"
-          placeholder="Fakkeenya: ST001"
-          autocomplete="off"
-          autocapitalize="characters"
-        >
-
-      </div>
-
-      <button
-        type="button"
-        class="primary-btn full-btn"
-        onclick="studentLogin()"
-      >
-        👨‍🎓 Barataa Seensi
-      </button>
+      </form>
 
       <p
-        class="small"
-        style="margin-top:12px"
+        style="
+          margin-top:15px;
+          text-align:center;
+          color:#718078;
+          line-height:1.5;
+        "
       >
-        Student Code kee barsiisaa irraa
-        fudhadhu.
+        Student Code kee barsiisaa irraa argadhu.
       </p>
 
     </div>
+
+    <div
+      id="authMessage"
+      class="auth-message"
+    ></div>
 
   </div>
 
 </div>
 
 
-<!-- ==================================================
+<!-- =====================================================
      APP PAGE
-================================================== -->
+===================================================== -->
 
 <div
   id="appPage"
   class="hidden"
 >
 
-  <div class="app-layout">
+  <!-- ================= SIDEBAR ================= -->
 
-    <!-- SIDEBAR -->
+  <aside
+    id="sidebar"
+    class="sidebar"
+  >
 
-    <aside
-      class="sidebar"
-      id="sidebar"
-    >
+    <div class="brand">
 
-      <div class="brand">
-        🎓 Walo-OR
+      <div class="brand-title">
+        🎯 Walo-OR
       </div>
 
-      <div class="user-box">
-
-        <strong id="sideUserName">
-          -
-        </strong>
-
-        <br>
-
-        <small id="sideUserRole">
-          -
-        </small>
-
+      <div class="brand-subtitle">
+        Attendance & Qormaata
       </div>
 
+    </div>
 
-      <!-- ======================
-           TEACHER NAV
-      ======================= -->
-
-      <div id="teacherNav">
-
-        <button
-          type="button"
-          class="nav-btn active"
-          onclick="teacherPage('dashboard')"
-        >
-          🏠 Dashboard
-        </button>
-
-        <button
-          type="button"
-          class="nav-btn"
-          onclick="teacherPage('classes')"
-        >
-          🏫 Kutaa
-        </button>
-
-        <button
-          type="button"
-          class="nav-btn"
-          onclick="teacherPage('students')"
-        >
-          👨‍🎓 Barattoota
-        </button>
-
-        <button
-          type="button"
-          class="nav-btn"
-          onclick="teacherPage('attendance')"
-        >
-          📝 Attendance
-        </button>
-
-        <button
-          type="button"
-          class="nav-btn"
-          onclick="teacherPage('report')"
-        >
-          📊 Report
-        </button>
-
-        <button
-          type="button"
-          class="nav-btn"
-          onclick="teacherPage('results')"
-        >
-          📚 Bu'aa Qormaataa
-        </button>
-
-      </div>
-
-
-      <!-- ======================
-           STUDENT NAV
-      ======================= -->
+    <div class="user-box">
 
       <div
-        id="studentNav"
-        class="hidden"
+        id="sidebarUserName"
+        class="user-name"
       >
-
-        <button
-          type="button"
-          class="nav-btn active"
-          onclick="studentPage('home')"
-        >
-          🏠 Home
-        </button>
-
-        <button
-          type="button"
-          class="nav-btn"
-          onclick="studentPage('attendance')"
-        >
-          📝 Attendance Koo
-        </button>
-
-        <button
-          type="button"
-          class="nav-btn"
-          onclick="studentPage('results')"
-        >
-          📚 Bu'aa Koo
-        </button>
-
+        -
       </div>
 
+      <div
+        id="sidebarUserRole"
+        class="user-role"
+      >
+        -
+      </div>
+
+    </div>
+
+
+    <!-- TEACHER NAV -->
+
+    <nav
+      id="teacherNav"
+      class="nav"
+    >
+
+      <div class="nav-title">
+        Barsiisaa
+      </div>
 
       <button
-        type="button"
-        class="nav-btn logout"
+        id="nav-teacher-dashboard"
+        onclick="teacherPage('dashboard')"
+      >
+        🏠 Dashboard
+      </button>
+
+      <button
+        id="nav-teacher-classes"
+        onclick="teacherPage('classes')"
+      >
+        🏫 Kutaa
+      </button>
+
+      <button
+        id="nav-teacher-students"
+        onclick="teacherPage('students')"
+      >
+        👨‍🎓 Barattoota
+      </button>
+
+      <button
+        id="nav-teacher-attendance"
+        onclick="teacherPage('attendance')"
+      >
+        📝 Attendance
+      </button>
+
+      <button
+        id="nav-teacher-report"
+        onclick="teacherPage('report')"
+      >
+        📊 Report
+      </button>
+
+      <button
+        id="nav-teacher-results"
+        onclick="teacherPage('results')"
+      >
+        📚 Bu'aa Qormaataa
+      </button>
+
+    </nav>
+
+
+    <!-- STUDENT NAV -->
+
+    <nav
+      id="studentNav"
+      class="nav hidden"
+    >
+
+      <div class="nav-title">
+        Barataa
+      </div>
+
+      <button
+        id="nav-student-home"
+        onclick="studentPage('home')"
+      >
+        🏠 Fuula Jalqabaa
+      </button>
+
+      <button
+        id="nav-student-attendance"
+        onclick="studentPage('attendance')"
+      >
+        📝 Attendance Koo
+      </button>
+
+      <button
+        id="nav-student-results"
+        onclick="studentPage('results')"
+      >
+        📚 Bu'aa Qormaataa Koo
+      </button>
+
+    </nav>
+
+
+    <nav class="nav">
+
+      <button
+        class="logout-btn"
         onclick="logout()"
       >
         🚪 Ba'i
       </button>
 
-    </aside>
+    </nav>
+
+  </aside>
 
 
-    <!-- MAIN -->
+  <!-- ================= MAIN ================= -->
 
-    <main class="main">
+  <main class="main">
 
-      <div class="topbar">
+    <header class="topbar">
+
+      <div style="display:flex;align-items:center;gap:12px;">
 
         <button
-          type="button"
-          class="mobile-menu"
+          class="menu-btn"
           onclick="toggleSidebar()"
+          type="button"
         >
           ☰
         </button>
@@ -1038,92 +1082,32 @@
 
       </div>
 
+      <div
+        id="topUserName"
+        style="font-weight:bold;color:#087443;"
+      >
+        -
+      </div>
 
-      <!-- ==================================================
+    </header>
+
+
+    <div class="content">
+
+      <!-- =================================================
            TEACHER DASHBOARD
-      ================================================== -->
+      ================================================= -->
 
       <section
         id="teacher-dashboard"
-        class="page active"
+        class="page"
       >
 
-        <div class="stats-grid">
+        <div class="welcome">
 
-          <div class="stat-card">
-
-            <div
-              class="number"
-              id="statClasses"
-            >
-              0
-            </div>
-
-            <div class="label">
-              Kutaa
-            </div>
-
-          </div>
-
-
-          <div class="stat-card">
-
-            <div
-              class="number"
-              id="statStudents"
-            >
-              0
-            </div>
-
-            <div class="label">
-              Barattoota
-            </div>
-
-          </div>
-
-
-          <div class="stat-card">
-
-            <div
-              class="number"
-              id="statPresent"
-            >
-              0
-            </div>
-
-            <div class="label">
-              Present
-            </div>
-
-          </div>
-
-
-          <div class="stat-card">
-
-            <div
-              class="number"
-              id="statAbsent"
-            >
-              0
-            </div>
-
-            <div class="label">
-              Absent
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <div
-          class="panel"
-          style="margin-top:20px"
-        >
-
-          <h3>
+          <h2>
             👋 Baga Nagaan Dhuftan
-          </h3>
+          </h2>
 
           <p>
             Walo-OR keessatti barattoota kee,
@@ -1131,9 +1115,133 @@
             salphaatti to'adhu.
           </p>
 
-          <div class="small">
+          <p style="margin-top:5px;">
             Attendance galmeessuun booda
             report irraa ilaalu dandeessa.
+          </p>
+
+        </div>
+
+        <div class="stats-grid">
+
+          <div class="stat-card">
+
+            <div class="stat-icon">
+              🏫
+            </div>
+
+            <div class="stat-label">
+              Kutaa
+            </div>
+
+            <div
+              id="statClasses"
+              class="stat-value"
+            >
+              0
+            </div>
+
+          </div>
+
+
+          <div class="stat-card">
+
+            <div class="stat-icon">
+              👨‍🎓
+            </div>
+
+            <div class="stat-label">
+              Barattoota
+            </div>
+
+            <div
+              id="statStudents"
+              class="stat-value"
+            >
+              0
+            </div>
+
+          </div>
+
+
+          <div class="stat-card">
+
+            <div class="stat-icon">
+              ✅
+            </div>
+
+            <div class="stat-label">
+              Present
+            </div>
+
+            <div
+              id="statPresent"
+              class="stat-value"
+            >
+              0
+            </div>
+
+          </div>
+
+
+          <div class="stat-card">
+
+            <div class="stat-icon">
+              ❌
+            </div>
+
+            <div class="stat-label">
+              Absent
+            </div>
+
+            <div
+              id="statAbsent"
+              class="stat-value"
+            >
+              0
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <h3>
+            🚀 Tarkaanfii Saffisaa
+          </h3>
+
+          <div class="actions">
+
+            <button
+              class="btn btn-primary"
+              onclick="teacherPage('classes')"
+            >
+              🏫 Kutaa Uumi
+            </button>
+
+            <button
+              class="btn btn-secondary"
+              onclick="teacherPage('students')"
+            >
+              👨‍🎓 Barataa Galchi
+            </button>
+
+            <button
+              class="btn btn-secondary"
+              onclick="teacherPage('attendance')"
+            >
+              📝 Attendance Galmeessi
+            </button>
+
+            <button
+              class="btn btn-secondary"
+              onclick="teacherPage('results')"
+            >
+              📚 Bu'aa Galchi
+            </button>
+
           </div>
 
         </div>
@@ -1141,72 +1249,77 @@
       </section>
 
 
-      <!-- ==================================================
+      <!-- =================================================
            TEACHER CLASSES
-      ================================================== -->
+      ================================================= -->
 
       <section
         id="teacher-classes"
         class="page"
       >
 
-        <div class="panel">
+        <div class="card">
 
           <h3>
             🏫 Kutaa Haaraa Uumi
           </h3>
 
-          <div class="form-grid">
+          <form id="classForm">
 
-            <div class="form-group">
+            <div class="form-grid">
 
-              <label>
-                Maqaa Kutaa
-              </label>
+              <div class="form-group">
 
-              <input
-                id="classNameInput"
-                placeholder="Fakkeenya: Kutaa 8A"
-              >
+                <label>
+                  Maqaa Kutaa
+                </label>
+
+                <input
+                  id="className"
+                  type="text"
+                  placeholder="Fakkeenya: Kutaa 8A"
+                  required
+                >
+
+              </div>
+
+
+              <div class="form-group">
+
+                <label>
+                  Sadarkaa / Grade
+                </label>
+
+                <input
+                  id="classGrade"
+                  type="text"
+                  placeholder="Fakkeenya: Grade 8"
+                >
+
+              </div>
 
             </div>
 
+            <button
+              class="btn btn-primary"
+              type="submit"
+            >
+              ➕ Kutaa Uumi
+            </button>
 
-            <div class="form-group">
-
-              <label>
-                Sadarkaa / Grade
-              </label>
-
-              <input
-                id="classGradeInput"
-                placeholder="Fakkeenya: Grade 8"
-              >
-
-            </div>
-
-          </div>
-
-
-          <button
-            type="button"
-            class="primary-btn full-btn"
-            onclick="addClass()"
-          >
-            + Kutaa Uumi
-          </button>
+          </form>
 
         </div>
 
 
-        <div class="panel">
+        <div class="card">
 
           <h3>
-            Kutaa Koo
+            🏫 Kutaalee Koo
           </h3>
 
           <div
-            id="classesTable"
+            id="classesList"
             class="table-wrap"
           >
             <div class="empty">
@@ -1219,104 +1332,111 @@
       </section>
 
 
-      <!-- ==================================================
+      <!-- =================================================
            TEACHER STUDENTS
-      ================================================== -->
+      ================================================= -->
 
       <section
         id="teacher-students"
         class="page"
       >
 
-        <div class="panel">
+        <div class="card">
 
           <h3>
-            👨‍🎓 Barataa Galmeessi
+            👨‍🎓 Barataa Haaraa Galchi
           </h3>
 
-          <div class="form-grid">
+          <form id="studentForm">
 
-            <div class="form-group">
+            <div class="form-grid-4">
 
-              <label>
-                Maqaa Guutuu
-              </label>
+              <div class="form-group">
 
-              <input
-                id="studentNameInput"
-                placeholder="Maqaa barataa"
-              >
+                <label>
+                  Maqaa Guutuu
+                </label>
+
+                <input
+                  id="studentName"
+                  type="text"
+                  placeholder="Maqaa barataa"
+                  required
+                >
+
+              </div>
+
+
+              <div class="form-group">
+
+                <label>
+                  Student Code
+                </label>
+
+                <input
+                  id="studentCode"
+                  type="text"
+                  placeholder="ST001"
+                  required
+                >
+
+              </div>
+
+
+              <div class="form-group">
+
+                <label>
+                  Bilbila
+                </label>
+
+                <input
+                  id="studentPhone"
+                  type="text"
+                  placeholder="09..."
+                >
+
+              </div>
+
+
+              <div class="form-group">
+
+                <label>
+                  Kutaa
+                </label>
+
+                <select
+                  id="studentClass"
+                  required
+                >
+                  <option value="">
+                    Kutaa filadhu
+                  </option>
+                </select>
+
+              </div>
 
             </div>
 
+            <button
+              class="btn btn-primary"
+              type="submit"
+            >
+              ➕ Barataa Galchi
+            </button>
 
-            <div class="form-group">
-
-              <label>
-                Student Code
-              </label>
-
-              <input
-                id="studentCodeInput"
-                placeholder="ST001"
-                autocapitalize="characters"
-              >
-
-            </div>
-
-
-            <div class="form-group">
-
-              <label>
-                Bilbila
-              </label>
-
-              <input
-                id="studentPhoneInput"
-                placeholder="09..."
-              >
-
-            </div>
-
-
-            <div class="form-group">
-
-              <label>
-                Kutaa
-              </label>
-
-              <select id="studentClassInput">
-
-                <option value="">
-                  Kutaa filadhu
-                </option>
-
-              </select>
-
-            </div>
-
-          </div>
-
-
-          <button
-            type="button"
-            class="primary-btn full-btn"
-            onclick="addStudent()"
-          >
-            + Barataa Galmeessi
-          </button>
+          </form>
 
         </div>
 
 
-        <div class="panel">
+        <div class="card">
 
           <h3>
-            Tarree Barattootaa
+            👨‍🎓 Tarree Barattootaa
           </h3>
 
           <div
-            id="studentsTable"
+            id="studentsList"
             class="table-wrap"
           >
             <div class="empty">
@@ -1329,16 +1449,16 @@
       </section>
 
 
-      <!-- ==================================================
+      <!-- =================================================
            TEACHER ATTENDANCE
-      ================================================== -->
+      ================================================= -->
 
       <section
         id="teacher-attendance"
         class="page"
       >
 
-        <div class="panel">
+        <div class="card">
 
           <h3>
             📝 Attendance Galmeessi
@@ -1356,11 +1476,9 @@
                 id="attendanceClass"
                 onchange="loadAttendanceStudents()"
               >
-
                 <option value="">
                   Kutaa filadhu
                 </option>
-
               </select>
 
             </div>
@@ -1375,27 +1493,19 @@
               <input
                 id="attendanceDate"
                 type="date"
-                onchange="loadAttendanceStudents()"
               >
 
             </div>
 
           </div>
 
-        </div>
-
-
-        <div class="panel">
-
           <div
-            id="attendanceTable"
-            class="table-wrap"
+            id="attendanceStudents"
+            style="margin-top:20px;"
           >
-
             <div class="empty">
-              Jalqaba kutaa fi guyyaa filadhu.
+              Kutaa fi guyyaa filadhu.
             </div>
-
           </div>
 
         </div>
@@ -1403,16 +1513,16 @@
       </section>
 
 
-      <!-- ==================================================
-           REPORT
-      ================================================== -->
+      <!-- =================================================
+           TEACHER REPORT
+      ================================================= -->
 
       <section
         id="teacher-report"
         class="page"
       >
 
-        <div class="panel">
+        <div class="card">
 
           <h3>
             📊 Attendance Report
@@ -1427,11 +1537,9 @@
               </label>
 
               <select id="reportClass">
-
                 <option value="">
-                  Kutaawwan hundaa
+                  Kutaa filadhu
                 </option>
-
               </select>
 
             </div>
@@ -1466,29 +1574,22 @@
 
           </div>
 
-
           <button
-            type="button"
-            class="primary-btn full-btn"
+            class="btn btn-primary"
             onclick="loadReport()"
           >
-            📊 Report Fidi
+            🔎 Report Ilaali
           </button>
 
         </div>
 
 
-        <div class="panel">
+        <div class="card">
 
-          <div
-            id="reportTable"
-            class="table-wrap"
-          >
-
+          <div id="reportResult">
             <div class="empty">
-              Report hin fe'amne.
+              Report ilaaluuf filannoo guuti.
             </div>
-
           </div>
 
         </div>
@@ -1496,154 +1597,162 @@
       </section>
 
 
-      <!-- ==================================================
+      <!-- =================================================
            TEACHER RESULTS
-      ================================================== -->
+      ================================================= -->
 
       <section
         id="teacher-results"
         class="page"
       >
 
-        <div class="panel">
+        <div class="card">
 
           <h3>
             📚 Bu'aa Qormaataa Galchi
           </h3>
 
-          <div class="form-grid-3">
+          <form id="resultForm">
 
-            <div class="form-group">
+            <div class="form-grid-3">
 
-              <label>
-                Student Code
-              </label>
+              <div class="form-group">
 
-              <input
-                id="resultStudentCode"
-                placeholder="ST001"
-              >
+                <label>
+                  Student Code
+                </label>
+
+                <input
+                  id="resultStudentCode"
+                  type="text"
+                  placeholder="ST001"
+                  required
+                >
+
+              </div>
+
+
+              <div class="form-group">
+
+                <label>
+                  Maqaa Qormaataa
+                </label>
+
+                <input
+                  id="resultExamName"
+                  type="text"
+                  placeholder="Qormaata Ji'a..."
+                  required
+                >
+
+              </div>
+
+
+              <div class="form-group">
+
+                <label>
+                  Barnoota
+                </label>
+
+                <input
+                  id="resultSubject"
+                  type="text"
+                  placeholder="Herrega"
+                  required
+                >
+
+              </div>
+
+
+              <div class="form-group">
+
+                <label>
+                  Qabxii Argate
+                </label>
+
+                <input
+                  id="resultScore"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  required
+                >
+
+              </div>
+
+
+              <div class="form-group">
+
+                <label>
+                  Qabxii Waliigalaa
+                </label>
+
+                <input
+                  id="resultTotal"
+                  type="number"
+                  min="1"
+                  step="0.01"
+                  value="100"
+                  required
+                >
+
+              </div>
+
+
+              <div class="form-group">
+
+                <label>
+                  Guyyaa
+                </label>
+
+                <input
+                  id="resultDate"
+                  type="date"
+                >
+
+              </div>
+
+
+              <div class="form-group full">
+
+                <label>
+                  Yaada
+                </label>
+
+                <textarea
+                  id="resultNote"
+                  placeholder="Yaada yoo jiraate..."
+                ></textarea>
+
+              </div>
 
             </div>
 
+            <button
+              class="btn btn-primary"
+              type="submit"
+            >
+              💾 Bu'aa Galchi
+            </button>
 
-            <div class="form-group">
-
-              <label>
-                Maqaa Qormaataa
-              </label>
-
-              <input
-                id="resultExamName"
-                placeholder="Qormaata Ji'a 1"
-              >
-
-            </div>
-
-
-            <div class="form-group">
-
-              <label>
-                Subject
-              </label>
-
-              <input
-                id="resultSubject"
-                placeholder="Herrega"
-              >
-
-            </div>
-
-
-            <div class="form-group">
-
-              <label>
-                Score
-              </label>
-
-              <input
-                id="resultScore"
-                type="number"
-                min="0"
-                step="0.01"
-              >
-
-            </div>
-
-
-            <div class="form-group">
-
-              <label>
-                Total
-              </label>
-
-              <input
-                id="resultTotal"
-                type="number"
-                min="1"
-                step="0.01"
-                value="100"
-              >
-
-            </div>
-
-
-            <div class="form-group">
-
-              <label>
-                Guyyaa
-              </label>
-
-              <input
-                id="resultDate"
-                type="date"
-              >
-
-            </div>
-
-          </div>
-
-
-          <div class="form-group">
-
-            <label>
-              Yaada
-            </label>
-
-            <textarea
-              id="resultNote"
-              placeholder="Yaada yoo jiraate..."
-            ></textarea>
-
-          </div>
-
-
-          <button
-            type="button"
-            class="primary-btn full-btn"
-            onclick="addResult()"
-          >
-            + Bu'aa Galchi
-          </button>
+          </form>
 
         </div>
 
 
-        <div class="panel">
+        <div class="card">
 
           <h3>
-            Bu'aa Galmaa'e
+            📚 Bu'aa Galmaa'e
           </h3>
 
           <div
-            id="resultsTable"
+            id="resultsList"
             class="table-wrap"
           >
-
             <div class="empty">
               Fe'aa jira...
             </div>
-
           </div>
 
         </div>
@@ -1651,32 +1760,72 @@
       </section>
 
 
-      <!-- ==================================================
+      <!-- =================================================
            STUDENT HOME
-      ================================================== -->
+      ================================================= -->
 
       <section
         id="student-home"
         class="page"
       >
 
-        <div class="panel">
+        <div class="student-hero">
 
-          <h3>
-            👨‍🎓 Odeeffannoo Koo
-          </h3>
+          <h1>
+            👋 Baga Nagaan Dhuftan
+          </h1>
 
-          <div id="studentInfo">
-            Fe'aa jira...
+          <p>
+            Fuula barataa Walo-OR.
+            As irraa attendance fi bu'aa
+            qormaataa kee ilaali.
+          </p>
+
+
+          <div class="student-info">
+
+            <div class="student-info-box">
+
+              <small>
+                Maqaa
+              </small>
+
+              <strong id="studentHomeName">
+                -
+              </strong>
+
+            </div>
+
+
+            <div class="student-info-box">
+
+              <small>
+                Student Code
+              </small>
+
+              <strong id="studentHomeCode">
+                -
+              </strong>
+
+            </div>
+
+
+            <div class="student-info-box">
+
+              <small>
+                Kutaa
+              </small>
+
+              <strong id="studentHomeClass">
+                -
+              </strong>
+
+            </div>
+
           </div>
 
         </div>
 
-
-        <!-- IMPORTANT:
-             KUN BUTTON DHUGAA DHA.
-             STUDENT IRRAA CLICK GODHUU DANDEESSA.
-        -->
 
         <div class="student-cards">
 
@@ -1690,13 +1839,14 @@
               📝
             </div>
 
-            <strong>
+            <h3>
               Attendance Koo
-            </strong>
+            </h3>
 
-            <span class="small">
-              Guyyaa guyyaan attendance kee ilaali.
-            </span>
+            <p>
+              Guyyaa kamiin akka argamte,
+              hafte ykn turte ilaali.
+            </p>
 
           </button>
 
@@ -1711,13 +1861,14 @@
               📚
             </div>
 
-            <strong>
+            <h3>
               Bu'aa Qormaataa Koo
-            </strong>
+            </h3>
 
-            <span class="small">
-              Bu'aa qormaata kee ilaali.
-            </span>
+            <p>
+              Qabxii qormaataa kee fi
+              percentage ilaali.
+            </p>
 
           </button>
 
@@ -1726,23 +1877,23 @@
       </section>
 
 
-      <!-- ==================================================
+      <!-- =================================================
            STUDENT ATTENDANCE
-      ================================================== -->
+      ================================================= -->
 
       <section
         id="student-attendance"
         class="page"
       >
 
-        <div class="panel">
+        <div class="card">
 
           <h3>
             📝 Attendance Koo
           </h3>
 
           <div
-            id="studentAttendanceTable"
+            id="studentAttendanceList"
             class="table-wrap"
           >
 
@@ -1757,23 +1908,23 @@
       </section>
 
 
-      <!-- ==================================================
+      <!-- =================================================
            STUDENT RESULTS
-      ================================================== -->
+      ================================================= -->
 
       <section
         id="student-results"
         class="page"
       >
 
-        <div class="panel">
+        <div class="card">
 
           <h3>
             📚 Bu'aa Qormaataa Koo
           </h3>
 
           <div
-            id="studentResultsTable"
+            id="studentResultsList"
             class="table-wrap"
           >
 
@@ -1787,111 +1938,222 @@
 
       </section>
 
-    </main>
+    </div>
 
-  </div>
+  </main>
 
 </div>
 
 
+<div id="toast"></div>
+
+
 <script>
-
-/* =====================================================
+/* =========================================================
    GLOBAL
-===================================================== */
+========================================================= */
 
-const TEACHER_TOKEN_KEY =
-  "walo_teacher_token";
+const TEACHER_TOKEN_KEY = "walo_teacher_token";
+const STUDENT_TOKEN_KEY = "walo_student_token";
 
-const STUDENT_TOKEN_KEY =
-  "walo_student_token";
-
-let currentUser = null;
-
+let currentTeacher = null;
 let currentStudent = null;
 
 
-/* =====================================================
-   TODAY
-===================================================== */
+/* =========================================================
+   BASIC HELPERS
+========================================================= */
+
+function escapeHtml(value) {
+
+  if (value === null || value === undefined) {
+    return "";
+  }
+
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 
 function today() {
 
   const d = new Date();
 
-  const year =
-    d.getFullYear();
+  const y = d.getFullYear();
 
-  const month =
-    String(d.getMonth() + 1)
-      .padStart(2, "0");
+  const m = String(
+    d.getMonth() + 1
+  ).padStart(2, "0");
 
-  const day =
-    String(d.getDate())
-      .padStart(2, "0");
+  const day = String(
+    d.getDate()
+  ).padStart(2, "0");
 
-  return `${year}-${month}-${day}`;
+  return `${y}-${m}-${day}`;
 }
 
 
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
+function showToast(message, type = "success") {
 
-function escapeHtml(value) {
+  const toast =
+    document.getElementById("toast");
 
-  if (
-    value === null ||
-    value === undefined
-  ) {
-    return "";
-  }
+  toast.textContent = message;
 
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
+  toast.className = "";
 
+  toast.id = "toast";
 
-/* =====================================================
-   MESSAGE
-===================================================== */
+  toast.classList.add("show");
 
-function showMessage(
-  message,
-  type = "error"
-) {
-
-  const box =
-    document.getElementById(
-      "authMessage"
-    );
-
-  box.innerHTML = `
-    <div class="message ${type}">
-      ${escapeHtml(message)}
-    </div>
-  `;
+  toast.classList.add(type);
 
   setTimeout(() => {
-
-    box.innerHTML = "";
-
-  }, 5000);
+    toast.classList.remove("show");
+  }, 3500);
 }
 
 
-/* =====================================================
-   TEACHER API
-===================================================== */
+function showAuthMessage(message, type = "error") {
 
-async function api(
-  url,
-  options = {}
-) {
+  const el =
+    document.getElementById("authMessage");
+
+  el.textContent = message;
+
+  el.className =
+    "auth-message " + type;
+}
+
+
+function clearAuthMessage() {
+
+  const el =
+    document.getElementById("authMessage");
+
+  el.textContent = "";
+
+  el.className = "auth-message";
+}
+
+
+/* =========================================================
+   IMPORTANT PAGE FIX
+   Kun rakkoo Student page / Teacher Dashboard fura.
+========================================================= */
+
+function hideAllPages() {
+
+  document
+    .querySelectorAll(".page")
+    .forEach(page => {
+
+      page.classList.remove("active");
+
+    });
+
+}
+
+
+/* =========================================================
+   AUTH TAB
+========================================================= */
+
+function showAuth(type) {
+
+  clearAuthMessage();
+
+  const teacherAuth =
+    document.getElementById("teacherAuth");
+
+  const studentAuth =
+    document.getElementById("studentAuth");
+
+  const teacherTab =
+    document.getElementById("teacherTab");
+
+  const studentTab =
+    document.getElementById("studentTab");
+
+  if (type === "teacher") {
+
+    teacherAuth.classList.remove("hidden");
+
+    studentAuth.classList.add("hidden");
+
+    teacherTab.classList.add("active");
+
+    studentTab.classList.remove("active");
+
+  } else {
+
+    teacherAuth.classList.add("hidden");
+
+    studentAuth.classList.remove("hidden");
+
+    teacherTab.classList.remove("active");
+
+    studentTab.classList.add("active");
+
+  }
+
+}
+
+
+function toggleTeacherForm() {
+
+  const login =
+    document.getElementById("teacherLoginForm");
+
+  const register =
+    document.getElementById("teacherRegisterBox");
+
+  const text =
+    document.getElementById("registerText");
+
+  const button =
+    document.querySelector(
+      ".switch-form button"
+    );
+
+  if (register.classList.contains("hidden")) {
+
+    login.classList.add("hidden");
+
+    register.classList.remove("hidden");
+
+    text.textContent =
+      "Account qabdaa?";
+
+    button.textContent =
+      "Seeni";
+
+  } else {
+
+    login.classList.remove("hidden");
+
+    register.classList.add("hidden");
+
+    text.textContent =
+      "Account hin qabduu?";
+
+    button.textContent =
+      "Galmaa'i";
+
+  }
+
+}
+
+
+/* =========================================================
+   API
+========================================================= */
+
+async function api(url, options = {}) {
 
   const token =
     localStorage.getItem(
@@ -1899,14 +2161,11 @@ async function api(
     );
 
   const headers = {
-    "Content-Type":
-      "application/json",
-
+    "Content-Type": "application/json",
     ...(options.headers || {})
   };
 
   if (token) {
-
     headers.Authorization =
       "Bearer " + token;
   }
@@ -1920,34 +2179,39 @@ async function api(
   let data = {};
 
   try {
+    data = await response.json();
+  } catch (e) {
+    data = {};
+  }
 
-    data =
-      await response.json();
+  if (response.status === 401) {
 
-  } catch (_) {}
+    localStorage.removeItem(
+      TEACHER_TOKEN_KEY
+    );
+
+    currentTeacher = null;
+
+    openAuthPage();
+
+    throw new Error(
+      data.error || "Login kee xumurame."
+    );
+  }
 
   if (!response.ok) {
 
-    if (response.status === 401) {
-
-      localStorage.removeItem(
-        TEACHER_TOKEN_KEY
-      );
-    }
-
     throw new Error(
       data.error ||
-      "Request milkaa'uu dide."
+      data.message ||
+      "Dogoggorri uumame."
     );
+
   }
 
   return data;
 }
 
-
-/* =====================================================
-   STUDENT API
-===================================================== */
 
 async function studentApi(
   url,
@@ -1959,22 +2223,15 @@ async function studentApi(
       STUDENT_TOKEN_KEY
     );
 
-  if (!token) {
-
-    throw new Error(
-      "Student login hin jiru."
-    );
-  }
-
   const headers = {
-    "Content-Type":
-      "application/json",
-
+    "Content-Type": "application/json",
     ...(options.headers || {})
   };
 
-  headers.Authorization =
-    "Bearer " + token;
+  if (token) {
+    headers.Authorization =
+      "Bearer " + token;
+  }
 
   const response =
     await fetch(url, {
@@ -1985,548 +2242,518 @@ async function studentApi(
   let data = {};
 
   try {
+    data = await response.json();
+  } catch (e) {
+    data = {};
+  }
 
-    data =
-      await response.json();
+  if (response.status === 401) {
 
-  } catch (_) {}
+    localStorage.removeItem(
+      STUDENT_TOKEN_KEY
+    );
 
-  if (!response.ok) {
+    currentStudent = null;
 
-    if (response.status === 401) {
-
-      localStorage.removeItem(
-        STUDENT_TOKEN_KEY
-      );
-
-      currentStudent = null;
-
-      openAuthPage();
-    }
+    openAuthPage();
 
     throw new Error(
       data.error ||
-      "Student request milkaa'uu dide."
+      "Student login kee xumurame."
     );
+
+  }
+
+  if (!response.ok) {
+
+    throw new Error(
+      data.error ||
+      data.message ||
+      "Dogoggorri uumame."
+    );
+
   }
 
   return data;
 }
 
 
-/* =====================================================
-   AUTH UI
-===================================================== */
-
-function showAuth(type) {
-
-  const isTeacher =
-    type === "teacher";
-
-  document
-    .getElementById(
-      "teacherAuth"
-    )
-    .classList.toggle(
-      "hidden",
-      !isTeacher
-    );
-
-  document
-    .getElementById(
-      "studentAuth"
-    )
-    .classList.toggle(
-      "hidden",
-      isTeacher
-    );
-
-  document
-    .getElementById(
-      "teacherTab"
-    )
-    .classList.toggle(
-      "active",
-      isTeacher
-    );
-
-  document
-    .getElementById(
-      "studentTab"
-    )
-    .classList.toggle(
-      "active",
-      !isTeacher
-    );
-}
-
-
-/* =====================================================
-   TOGGLE TEACHER FORM
-===================================================== */
-
-function toggleTeacherForm() {
-
-  document
-    .getElementById(
-      "teacherLoginForm"
-    )
-    .classList.toggle(
-      "hidden"
-    );
-
-  document
-    .getElementById(
-      "teacherRegisterForm"
-    )
-    .classList.toggle(
-      "hidden"
-    );
-}
-
-
-/* =====================================================
-   OPEN AUTH
-===================================================== */
+/* =========================================================
+   AUTH PAGE
+========================================================= */
 
 function openAuthPage() {
 
-  document
-    .getElementById(
-      "appPage"
-    )
-    .classList.add(
-      "hidden"
-    );
+  hideAllPages();
 
   document
-    .getElementById(
-      "authPage"
-    )
-    .classList.remove(
-      "hidden"
-    );
+    .getElementById("appPage")
+    .classList.add("hidden");
 
-  closeSidebar();
+  document
+    .getElementById("authPage")
+    .style.display = "flex";
 
   showAuth("teacher");
+
 }
 
-
-/* =====================================================
-   TEACHER LOGIN
-===================================================== */
-
-async function teacherLogin() {
-
-  try {
-
-    const email =
-      document
-        .getElementById(
-          "loginEmail"
-        )
-        .value
-        .trim();
-
-    const password =
-      document
-        .getElementById(
-          "loginPassword"
-        )
-        .value;
-
-    if (!email || !password) {
-
-      showMessage(
-        "Email fi password guuti."
-      );
-
-      return;
-    }
-
-    const data =
-      await api(
-        "/api/auth/login",
-        {
-          method: "POST",
-
-          body: JSON.stringify({
-            email,
-            password
-          })
-        }
-      );
-
-    localStorage.setItem(
-      TEACHER_TOKEN_KEY,
-      data.token
-    );
-
-    localStorage.removeItem(
-      STUDENT_TOKEN_KEY
-    );
-
-    currentUser =
-      data.user;
-
-    currentStudent = null;
-
-    openTeacherApp();
-
-  } catch (err) {
-
-    showMessage(
-      err.message
-    );
-  }
-}
-
-
-/* =====================================================
-   TEACHER REGISTER
-===================================================== */
-
-async function teacherRegister() {
-
-  try {
-
-    const name =
-      document
-        .getElementById(
-          "registerName"
-        )
-        .value
-        .trim();
-
-    const email =
-      document
-        .getElementById(
-          "registerEmail"
-        )
-        .value
-        .trim();
-
-    const password =
-      document
-        .getElementById(
-          "registerPassword"
-        )
-        .value;
-
-    if (
-      !name ||
-      !email ||
-      !password
-    ) {
-
-      showMessage(
-        "Odeeffannoo hunda guuti."
-      );
-
-      return;
-    }
-
-    if (password.length < 6) {
-
-      showMessage(
-        "Password yoo xiqqaate qubee 6 qabaachuu qaba."
-      );
-
-      return;
-    }
-
-    const data =
-      await api(
-        "/api/auth/register",
-        {
-          method: "POST",
-
-          body: JSON.stringify({
-            name,
-            email,
-            password
-          })
-        }
-      );
-
-    localStorage.setItem(
-      TEACHER_TOKEN_KEY,
-      data.token
-    );
-
-    localStorage.removeItem(
-      STUDENT_TOKEN_KEY
-    );
-
-    currentUser =
-      data.user;
-
-    currentStudent = null;
-
-    openTeacherApp();
-
-  } catch (err) {
-
-    showMessage(
-      err.message
-    );
-  }
-}
-
-
-/* =====================================================
-   STUDENT LOGIN
-===================================================== */
-
-async function studentLogin() {
-
-  try {
-
-    const input =
-      document
-        .getElementById(
-          "studentCodeLogin"
-        );
-
-    const studentCode =
-      input.value
-        .trim()
-        .toUpperCase();
-
-    if (!studentCode) {
-
-      showMessage(
-        "Student Code galchi."
-      );
-
-      input.focus();
-
-      return;
-    }
-
-    const response =
-      await fetch(
-        "/api/student/login",
-        {
-          method: "POST",
-
-          headers: {
-            "Content-Type":
-              "application/json"
-          },
-
-          body: JSON.stringify({
-
-            /* BOTH NAMES:
-               backend tokkoon yoo
-               student_code eegu
-               ykn studentCode eegu
-               rakkoo hin qabaatu.
-            */
-
-            student_code:
-              studentCode,
-
-            studentCode:
-              studentCode
-          })
-        }
-      );
-
-    let data = {};
-
-    try {
-
-      data =
-        await response.json();
-
-    } catch (_) {}
-
-    if (!response.ok) {
-
-      throw new Error(
-        data.error ||
-        "Student login hin milkoofne."
-      );
-    }
-
-    if (!data.token) {
-
-      throw new Error(
-        "Token student hin argamne."
-      );
-    }
-
-    localStorage.setItem(
-      STUDENT_TOKEN_KEY,
-      data.token
-    );
-
-    localStorage.removeItem(
-      TEACHER_TOKEN_KEY
-    );
-
-    currentStudent =
-      data.student;
-
-    currentUser = null;
-
-    openStudentApp();
-
-    /* Student page banamee booda
-       odeeffannoo isaa guuti.
-    */
-
-    await loadStudentHome();
-
-  } catch (err) {
-
-    console.error(
-      "STUDENT LOGIN:",
-      err
-    );
-
-    showMessage(
-      err.message
-    );
-  }
-}
-
-
-/* =====================================================
-   OPEN TEACHER APP
-===================================================== */
 
 function openTeacherApp() {
 
-  document
-    .getElementById(
-      "authPage"
-    )
-    .classList.add(
-      "hidden"
-    );
+  hideAllPages();
 
   document
-    .getElementById(
-      "appPage"
-    )
-    .classList.remove(
-      "hidden"
-    );
+    .getElementById("authPage")
+    .style.display = "none";
 
   document
-    .getElementById(
-      "teacherNav"
-    )
-    .classList.remove(
-      "hidden"
-    );
+    .getElementById("appPage")
+    .classList.remove("hidden");
 
   document
-    .getElementById(
-      "studentNav"
-    )
-    .classList.add(
-      "hidden"
-    );
+    .getElementById("teacherNav")
+    .classList.remove("hidden");
 
   document
-    .getElementById(
-      "sideUserName"
-    )
-    .textContent =
-    currentUser?.name || "-";
+    .getElementById("studentNav")
+    .classList.add("hidden");
+
+  updateSidebar();
 
   document
-    .getElementById(
-      "sideUserRole"
-    )
-    .textContent =
-    "👨‍🏫 Barsiisaa";
-
-  document
-    .getElementById(
-      "attendanceDate"
-    )
+    .getElementById("attendanceDate")
     .value = today();
 
   document
-    .getElementById(
-      "resultDate"
-    )
+    .getElementById("resultDate")
     .value = today();
 
-  teacherPage(
-    "dashboard"
-  );
+  document
+    .getElementById("reportFrom")
+    .value = today();
+
+  document
+    .getElementById("reportTo")
+    .value = today();
+
+  teacherPage("dashboard");
+
 }
 
-
-/* =====================================================
-   OPEN STUDENT APP
-===================================================== */
 
 function openStudentApp() {
 
-  document
-    .getElementById(
-      "authPage"
-    )
-    .classList.add(
-      "hidden"
-    );
+  /* IMPORTANT:
+     Teacher dashboard dabalatee active akka hin taane
+     dura page hunda dhoksi. */
+
+  hideAllPages();
 
   document
-    .getElementById(
-      "appPage"
-    )
-    .classList.remove(
-      "hidden"
-    );
+    .getElementById("authPage")
+    .style.display = "none";
 
   document
-    .getElementById(
-      "teacherNav"
-    )
-    .classList.add(
-      "hidden"
-    );
+    .getElementById("appPage")
+    .classList.remove("hidden");
 
   document
-    .getElementById(
-      "studentNav"
-    )
-    .classList.remove(
-      "hidden"
-    );
+    .getElementById("teacherNav")
+    .classList.add("hidden");
 
   document
-    .getElementById(
-      "sideUserName"
-    )
-    .textContent =
-    currentStudent?.full_name || "-";
+    .getElementById("studentNav")
+    .classList.remove("hidden");
 
-  document
-    .getElementById(
-      "sideUserRole"
-    )
-    .textContent =
-    "👨‍🎓 Barataa";
+  updateSidebar();
 
-  studentPage(
-    "home"
-  );
+  studentPage("home");
+
 }
 
 
-/* =====================================================
-   TEACHER PAGE
-===================================================== */
+/* =========================================================
+   TEACHER LOGIN
+========================================================= */
 
-async function teacherPage(page) {
+document
+  .getElementById("teacherLoginForm")
+  .addEventListener(
+    "submit",
+    async function(e) {
+
+      e.preventDefault();
+
+      clearAuthMessage();
+
+      const email =
+        document
+          .getElementById(
+            "teacherLoginEmail"
+          )
+          .value
+          .trim();
+
+      const password =
+        document
+          .getElementById(
+            "teacherLoginPassword"
+          )
+          .value;
+
+      try {
+
+        const data =
+          await api(
+            "/api/auth/login",
+            {
+              method: "POST",
+              body: JSON.stringify({
+                email,
+                password
+              })
+            }
+          );
+
+        if (!data.token) {
+          throw new Error(
+            "Token hin argamne."
+          );
+        }
+
+        localStorage.setItem(
+          TEACHER_TOKEN_KEY,
+          data.token
+        );
+
+        localStorage.removeItem(
+          STUDENT_TOKEN_KEY
+        );
+
+        currentTeacher =
+          data.user || data.teacher || null;
+
+        openTeacherApp();
+
+        showToast(
+          "Baga nagaan dhuftan!",
+          "success"
+        );
+
+      } catch (error) {
+
+        showAuthMessage(
+          error.message,
+          "error"
+        );
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   TEACHER REGISTER
+========================================================= */
+
+document
+  .getElementById("teacherRegisterForm")
+  .addEventListener(
+    "submit",
+    async function(e) {
+
+      e.preventDefault();
+
+      clearAuthMessage();
+
+      const name =
+        document
+          .getElementById(
+            "teacherRegisterName"
+          )
+          .value
+          .trim();
+
+      const email =
+        document
+          .getElementById(
+            "teacherRegisterEmail"
+          )
+          .value
+          .trim();
+
+      const password =
+        document
+          .getElementById(
+            "teacherRegisterPassword"
+          )
+          .value;
+
+      try {
+
+        const data =
+          await api(
+            "/api/auth/register",
+            {
+              method: "POST",
+              body: JSON.stringify({
+                name,
+                email,
+                password
+              })
+            }
+          );
+
+        if (data.token) {
+
+          localStorage.setItem(
+            TEACHER_TOKEN_KEY,
+            data.token
+          );
+
+          localStorage.removeItem(
+            STUDENT_TOKEN_KEY
+          );
+
+          currentTeacher =
+            data.user || null;
+
+          openTeacherApp();
+
+          showToast(
+            "Account milkaa'inaan uumame.",
+            "success"
+          );
+
+        } else {
+
+          showAuthMessage(
+            "Account uumame. Amma seeni.",
+            "success"
+          );
+
+          toggleTeacherForm();
+
+        }
+
+      } catch (error) {
+
+        showAuthMessage(
+          error.message,
+          "error"
+        );
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   STUDENT LOGIN
+========================================================= */
+
+document
+  .getElementById("studentLoginForm")
+  .addEventListener(
+    "submit",
+    async function(e) {
+
+      e.preventDefault();
+
+      clearAuthMessage();
+
+      const studentCode =
+        document
+          .getElementById(
+            "studentCodeLogin"
+          )
+          .value
+          .trim();
+
+      if (!studentCode) {
+
+        showAuthMessage(
+          "Student Code galchi.",
+          "error"
+        );
+
+        return;
+      }
+
+      try {
+
+        const response =
+          await fetch(
+            "/api/student/login",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
+              body: JSON.stringify({
+                student_code:
+                  studentCode,
+
+                studentCode:
+                  studentCode
+              })
+            }
+          );
+
+        let data = {};
+
+        try {
+          data = await response.json();
+        } catch (e) {
+          data = {};
+        }
+
+        if (!response.ok) {
+
+          throw new Error(
+            data.error ||
+            data.message ||
+            "Student Code sirrii miti."
+          );
+
+        }
+
+        if (!data.token) {
+
+          throw new Error(
+            "Student token hin argamne."
+          );
+
+        }
+
+        localStorage.setItem(
+          STUDENT_TOKEN_KEY,
+          data.token
+        );
+
+        localStorage.removeItem(
+          TEACHER_TOKEN_KEY
+        );
+
+        currentStudent =
+          data.student ||
+          data.user ||
+          null;
+
+        openStudentApp();
+
+        await loadStudentHome();
+
+        showToast(
+          "Baga nagaan dhuftan!",
+          "success"
+        );
+
+      } catch (error) {
+
+        showAuthMessage(
+          error.message,
+          "error"
+        );
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   SIDEBAR / PAGE NAVIGATION
+========================================================= */
+
+function updateSidebar() {
+
+  const nameEl =
+    document.getElementById(
+      "sidebarUserName"
+    );
+
+  const roleEl =
+    document.getElementById(
+      "sidebarUserRole"
+    );
+
+  const topName =
+    document.getElementById(
+      "topUserName"
+    );
+
+  if (currentStudent) {
+
+    const name =
+      currentStudent.full_name ||
+      currentStudent.name ||
+      "Barataa";
+
+    nameEl.textContent = name;
+
+    roleEl.textContent =
+      "👨‍🎓 Barataa";
+
+    topName.textContent =
+      name;
+
+    return;
+  }
+
+  if (currentTeacher) {
+
+    const name =
+      currentTeacher.name ||
+      currentTeacher.full_name ||
+      currentTeacher.email ||
+      "Barsiisaa";
+
+    nameEl.textContent = name;
+
+    roleEl.textContent =
+      "👨‍🏫 Barsiisaa";
+
+    topName.textContent =
+      name;
+
+    return;
+  }
+
+  nameEl.textContent = "-";
+
+  roleEl.textContent = "-";
+
+  topName.textContent = "-";
+
+}
+
+
+function teacherPage(page) {
+
+  /*
+    IMPORTANT FIX:
+    page hunda dura dhoksi.
+    Kana jechuun student page fi teacher page
+    walirra hin bu'an.
+  */
+
+  hideAllPages();
+
+  const target =
+    document.getElementById(
+      "teacher-" + page
+    );
+
+  if (!target) {
+    return;
+  }
+
+  target.classList.add("active");
 
   const pages = [
     "dashboard",
@@ -2537,54 +2764,23 @@ async function teacherPage(page) {
     "results"
   ];
 
-  pages.forEach((p) => {
+  pages.forEach(p => {
 
-    const el =
+    const nav =
       document.getElementById(
-        "teacher-" + p
+        "nav-teacher-" + p
       );
 
-    if (el) {
+    if (nav) {
 
-      el.classList.toggle(
+      nav.classList.toggle(
         "active",
         p === page
       );
+
     }
+
   });
-
-
-  document
-    .querySelectorAll(
-      "#teacherNav .nav-btn"
-    )
-    .forEach(
-      btn =>
-        btn.classList.remove(
-          "active"
-        )
-    );
-
-
-  const navButtons =
-    document.querySelectorAll(
-      "#teacherNav .nav-btn"
-    );
-
-  const index =
-    pages.indexOf(page);
-
-  if (
-    index >= 0 &&
-    navButtons[index]
-  ) {
-
-    navButtons[index]
-      .classList.add(
-        "active"
-      );
-  }
-
 
   const titles = {
 
@@ -2592,7 +2788,7 @@ async function teacherPage(page) {
       "Dashboard",
 
     classes:
-      "Kutaa",
+      "Kutaalee",
 
     students:
       "Barattoota",
@@ -2605,288 +2801,351 @@ async function teacherPage(page) {
 
     results:
       "Bu'aa Qormaataa"
+
   };
 
-
   document
-    .getElementById(
-      "pageTitle"
-    )
+    .getElementById("pageTitle")
     .textContent =
-    titles[page] ||
-    "Walo-OR";
-
+      titles[page] ||
+      "Walo-OR";
 
   closeSidebar();
 
+  if (page === "dashboard") {
 
-  try {
+    loadDashboard();
 
-    if (page === "dashboard") {
-
-      await loadDashboard();
-    }
-
-    if (page === "classes") {
-
-      await loadClasses();
-    }
-
-    if (page === "students") {
-
-      await loadStudentPage();
-    }
-
-    if (page === "attendance") {
-
-      await loadAttendancePage();
-    }
-
-    if (page === "report") {
-
-      await loadReportPage();
-    }
-
-    if (page === "results") {
-
-      await loadResults();
-    }
-
-  } catch (err) {
-
-    console.error(
-      "TEACHER PAGE:",
-      err
-    );
   }
+
+  if (page === "classes") {
+
+    loadClasses();
+
+  }
+
+  if (page === "students") {
+
+    loadClasses();
+
+    loadStudents();
+
+  }
+
+  if (page === "attendance") {
+
+    loadClasses();
+
+    loadAttendanceStudents();
+
+  }
+
+  if (page === "report") {
+
+    loadClasses();
+
+  }
+
+  if (page === "results") {
+
+    loadResults();
+
+  }
+
 }
 
 
-/* =====================================================
+function studentPage(page) {
+
+  /*
+    IMPORTANT FIX:
+    Teacher Dashboard duraan active ture.
+    Amma page hunda irraa active haqna.
+  */
+
+  hideAllPages();
+
+  const target =
+    document.getElementById(
+      "student-" + page
+    );
+
+  if (!target) {
+    return;
+  }
+
+  target.classList.add("active");
+
+  const pages = [
+    "home",
+    "attendance",
+    "results"
+  ];
+
+  pages.forEach(p => {
+
+    const nav =
+      document.getElementById(
+        "nav-student-" + p
+      );
+
+    if (nav) {
+
+      nav.classList.toggle(
+        "active",
+        p === page
+      );
+
+    }
+
+  });
+
+  const titles = {
+
+    home:
+      "Fuula Jalqabaa",
+
+    attendance:
+      "Attendance Koo",
+
+    results:
+      "Bu'aa Qormaataa Koo"
+
+  };
+
+  document
+    .getElementById("pageTitle")
+    .textContent =
+      titles[page] ||
+      "Walo-OR";
+
+  closeSidebar();
+
+  if (page === "home") {
+
+    loadStudentHome();
+
+  }
+
+  if (page === "attendance") {
+
+    loadStudentAttendance();
+
+  }
+
+  if (page === "results") {
+
+    loadStudentResults();
+
+  }
+
+}
+
+
+/* =========================================================
    DASHBOARD
-===================================================== */
+========================================================= */
 
 async function loadDashboard() {
 
   try {
 
+    const data =
+      await api("/api/dashboard");
+
     const d =
-      await api(
-        "/api/dashboard"
-      );
+      data || {};
 
     document
-      .getElementById(
-        "statClasses"
-      )
+      .getElementById("statClasses")
       .textContent =
-      d.classes || 0;
+        Number(
+          d.classes ??
+          d.class_count ??
+          d.total_classes ??
+          0
+        );
 
     document
-      .getElementById(
-        "statStudents"
-      )
+      .getElementById("statStudents")
       .textContent =
-      d.students || 0;
+        Number(
+          d.students ??
+          d.student_count ??
+          d.total_students ??
+          0
+        );
 
     document
-      .getElementById(
-        "statPresent"
-      )
+      .getElementById("statPresent")
       .textContent =
-      d.present || 0;
+        Number(
+          d.present ??
+          d.present_count ??
+          0
+        );
 
     document
-      .getElementById(
-        "statAbsent"
-      )
+      .getElementById("statAbsent")
       .textContent =
-      d.absent || 0;
+        Number(
+          d.absent ??
+          d.absent_count ??
+          0
+        );
 
-  } catch (err) {
+  } catch (error) {
 
     console.error(
-      "DASHBOARD:",
-      err
+      "Dashboard error:",
+      error
     );
+
   }
+
 }
 
 
-/* =====================================================
+/* =========================================================
    CLASSES
-===================================================== */
+========================================================= */
 
 async function loadClasses() {
-
-  const box =
-    document.getElementById(
-      "classesTable"
-    );
 
   try {
 
     const data =
-      await api(
-        "/api/classes"
-      );
+      await api("/api/classes");
 
     const classes =
-      data.classes || [];
+      Array.isArray(data)
+        ? data
+        : (
+            data.classes ||
+            data.rows ||
+            []
+          );
 
+    const container =
+      document.getElementById(
+        "classesList"
+      );
 
     if (!classes.length) {
 
-      box.innerHTML = `
+      container.innerHTML = `
         <div class="empty">
-          Kutaan hin jiru.
+          Kutaan hin uumamne.
         </div>
       `;
 
-      await fillClassSelects(
-        []
-      );
+    } else {
 
-      return;
+      container.innerHTML = `
+        <table>
+
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Maqaa</th>
+              <th>Grade</th>
+              <th>Tarkaanfii</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            ${classes.map(c => `
+
+              <tr>
+
+                <td>
+                  ${escapeHtml(c.id)}
+                </td>
+
+                <td>
+                  ${escapeHtml(c.name)}
+                </td>
+
+                <td>
+                  ${escapeHtml(
+                    c.grade || "-"
+                  )}
+                </td>
+
+                <td>
+
+                  <button
+                    class="btn btn-danger"
+                    onclick="deleteClass(${Number(c.id)})"
+                  >
+                    🗑️ Haqi
+                  </button>
+
+                </td>
+
+              </tr>
+
+            `).join("")}
+
+          </tbody>
+
+        </table>
+      `;
+
     }
 
+    fillClassSelects(classes);
 
-    box.innerHTML = `
-      <table>
+  } catch (error) {
 
-        <thead>
+    document
+      .getElementById(
+        "classesList"
+      )
+      .innerHTML = `
+        <div class="empty">
+          ${escapeHtml(error.message)}
+        </div>
+      `;
 
-          <tr>
-            <th>#</th>
-            <th>Kutaa</th>
-            <th>Grade</th>
-            <th>Barattoota</th>
-            <th>Action</th>
-          </tr>
-
-        </thead>
-
-        <tbody>
-
-          ${classes.map(
-            (c, i) => `
-
-            <tr>
-
-              <td>
-                ${i + 1}
-              </td>
-
-              <td>
-                <strong>
-                  ${escapeHtml(c.name)}
-                </strong>
-              </td>
-
-              <td>
-                ${escapeHtml(
-                  c.grade || "-"
-                )}
-              </td>
-
-              <td>
-                ${c.student_count || 0}
-              </td>
-
-              <td>
-
-                <button
-                  type="button"
-                  class="danger-btn"
-                  onclick="deleteClass(${c.id})"
-                >
-                  Haqi
-                </button>
-
-              </td>
-
-            </tr>
-
-          `
-          ).join("")}
-
-        </tbody>
-
-      </table>
-    `;
-
-
-    await fillClassSelects(
-      classes
-    );
-
-  } catch (err) {
-
-    box.innerHTML = `
-      <div class="message error">
-        ${escapeHtml(err.message)}
-      </div>
-    `;
   }
+
 }
 
 
-/* =====================================================
-   CLASS SELECTS
-===================================================== */
-
-async function fillClassSelects(
-  classes
-) {
+function fillClassSelects(classes) {
 
   const selects = [
-    "studentClassInput",
+    "studentClass",
     "attendanceClass",
     "reportClass"
   ];
 
-  selects.forEach((id) => {
+  selects.forEach(id => {
 
     const select =
       document.getElementById(id);
 
-    if (!select) return;
+    if (!select) {
+      return;
+    }
 
     const old =
       select.value;
 
-    const firstText =
-      id === "reportClass"
-        ? "Kutaawwan hundaa"
-        : "Kutaa filadhu";
+    let firstText =
+      "Kutaa filadhu";
 
     select.innerHTML =
-      "";
+      `<option value="">${firstText}</option>`;
 
-    const first =
-      document.createElement(
-        "option"
-      );
-
-    first.value = "";
-
-    first.textContent =
-      firstText;
-
-    select.appendChild(
-      first
-    );
-
-
-    classes.forEach((c) => {
+    classes.forEach(c => {
 
       const option =
-        document.createElement(
-          "option"
-        );
+        document.createElement("option");
 
-      option.value =
-        c.id;
+      option.value = c.id;
 
       option.textContent =
         `${c.name}${
@@ -2895,107 +3154,76 @@ async function fillClassSelects(
             : ""
         }`;
 
-      select.appendChild(
-        option
-      );
+      select.appendChild(option);
+
     });
 
-
-    if (
-      old &&
-      [...select.options]
-        .some(
-          o =>
-            o.value ===
-            String(old)
-        )
-    ) {
-
-      select.value =
-        old;
+    if (old) {
+      select.value = old;
     }
 
   });
+
 }
 
 
-/* =====================================================
-   ADD CLASS
-===================================================== */
+document
+  .getElementById("classForm")
+  .addEventListener(
+    "submit",
+    async function(e) {
 
-async function addClass() {
+      e.preventDefault();
 
-  try {
+      const name =
+        document
+          .getElementById("className")
+          .value
+          .trim();
 
-    const name =
-      document
-        .getElementById(
-          "classNameInput"
-        )
-        .value
-        .trim();
+      const grade =
+        document
+          .getElementById("classGrade")
+          .value
+          .trim();
 
-    const grade =
-      document
-        .getElementById(
-          "classGradeInput"
-        )
-        .value
-        .trim();
+      try {
 
-    if (!name) {
+        await api(
+          "/api/classes",
+          {
+            method: "POST",
+            body: JSON.stringify({
+              name,
+              grade
+            })
+          }
+        );
 
-      alert(
-        "Maqaa kutaa guuti."
-      );
+        document
+          .getElementById("classForm")
+          .reset();
 
-      return;
-    }
+        showToast(
+          "Kutaan milkaa'inaan uumame."
+        );
 
-    await api(
-      "/api/classes",
-      {
-        method: "POST",
+        await loadClasses();
 
-        body: JSON.stringify({
-          name,
-          grade
-        })
+        await loadDashboard();
+
+      } catch (error) {
+
+        showToast(
+          error.message,
+          "error"
+        );
+
       }
-    );
 
-    document
-      .getElementById(
-        "classNameInput"
-      )
-      .value = "";
+    }
+  );
 
-    document
-      .getElementById(
-        "classGradeInput"
-      )
-      .value = "";
-
-    alert(
-      "✅ Kutaan milkaa'inaan uumame."
-    );
-
-    await loadClasses();
-
-    await loadDashboard();
-
-  } catch (err) {
-
-    alert(
-      "❌ " + err.message
-    );
-  }
-}
-
-
-/* =====================================================
-   DELETE CLASS
-===================================================== */
 
 async function deleteClass(id) {
 
@@ -3004,7 +3232,6 @@ async function deleteClass(id) {
       "Kutaa kana haquu barbaaddaa?"
     )
   ) {
-
     return;
   }
 
@@ -3017,335 +3244,247 @@ async function deleteClass(id) {
       }
     );
 
-    alert(
+    showToast(
       "Kutaan haqame."
     );
 
     await loadClasses();
 
+    await loadStudents();
+
     await loadDashboard();
 
-  } catch (err) {
+  } catch (error) {
 
-    alert(
-      "❌ " + err.message
+    showToast(
+      error.message,
+      "error"
     );
+
   }
+
 }
 
 
-/* =====================================================
+/* =========================================================
    STUDENTS
-===================================================== */
+========================================================= */
 
-async function loadStudentPage() {
-
-  await loadClasses();
-
-  await loadStudents();
-}
-
-
-async function loadStudents(
-  classId = ""
-) {
-
-  const box =
-    document.getElementById(
-      "studentsTable"
-    );
+async function loadStudents() {
 
   try {
 
-    const url =
-      classId
-        ? "/api/students?class_id=" +
-          encodeURIComponent(
-            classId
-          )
-        : "/api/students";
-
     const data =
-      await api(url);
+      await api("/api/students");
 
     const students =
-      data.students || [];
+      Array.isArray(data)
+        ? data
+        : (
+            data.students ||
+            data.rows ||
+            []
+          );
 
+    const container =
+      document.getElementById(
+        "studentsList"
+      );
 
     if (!students.length) {
 
-      box.innerHTML = `
+      container.innerHTML = `
         <div class="empty">
-          Barataan hin jiru.
+          Barataan hin galmoofne.
         </div>
       `;
 
       return;
     }
 
-
-    box.innerHTML = `
+    container.innerHTML = `
       <table>
 
         <thead>
 
           <tr>
-            <th>#</th>
             <th>Maqaa</th>
-            <th>Code</th>
-            <th>Kutaa</th>
+            <th>Student Code</th>
             <th>Bilbila</th>
-            <th>Student Link</th>
-            <th>Action</th>
+            <th>Kutaa</th>
+            <th>Tarkaanfii</th>
           </tr>
 
         </thead>
 
         <tbody>
 
-          ${students.map(
-            (s, i) => {
+          ${students.map(s => `
 
-              const link =
-                s.private_link || "";
+            <tr>
 
-              return `
+              <td>
+                ${escapeHtml(
+                  s.full_name ||
+                  s.name ||
+                  "-"
+                )}
+              </td>
 
-                <tr>
+              <td>
+                <strong>
+                  ${escapeHtml(
+                    s.student_code ||
+                    s.studentCode ||
+                    "-"
+                  )}
+                </strong>
+              </td>
 
-                  <td>
-                    ${i + 1}
-                  </td>
+              <td>
+                ${escapeHtml(
+                  s.phone || "-"
+                )}
+              </td>
 
-                  <td>
-                    <strong>
-                      ${escapeHtml(
-                        s.full_name
-                      )}
-                    </strong>
-                  </td>
+              <td>
+                ${escapeHtml(
+                  s.class_name ||
+                  s.className ||
+                  "-"
+                )}
+              </td>
 
-                  <td>
-                    ${escapeHtml(
-                      s.student_code
-                    )}
-                  </td>
+              <td>
 
-                  <td>
-                    ${escapeHtml(
-                      s.class_name ||
-                      "-"
-                    )}
-                  </td>
+                <div class="actions">
 
-                  <td>
-                    ${escapeHtml(
-                      s.phone ||
-                      "-"
-                    )}
-                  </td>
+                  <button
+                    class="btn btn-secondary"
+                    onclick="regenerateStudentLink(${Number(s.id)})"
+                  >
+                    🔗 Link
+                  </button>
 
-                  <td>
+                  <button
+                    class="btn btn-danger"
+                    onclick="deleteStudent(${Number(s.id)})"
+                  >
+                    🗑️ Haqi
+                  </button>
 
-                    ${
-                      link
-                        ? `
-                          <div class="link-box">
+                </div>
 
-                            <input
-                              value="${escapeHtml(
-                                link
-                              )}"
-                              readonly
-                            >
+              </td>
 
-                            <button
-                              type="button"
-                              class="secondary-btn"
-                              onclick="copyText(${JSON.stringify(
-                                link
-                              )})"
-                            >
-                              Copy
-                            </button>
+            </tr>
 
-                          </div>
-                        `
-                        : "-"
-                    }
-
-                  </td>
-
-                  <td>
-
-                    <button
-                      type="button"
-                      class="secondary-btn"
-                      onclick="regenerateStudentLink(${s.id})"
-                    >
-                      Link Haaromsi
-                    </button>
-
-                    <button
-                      type="button"
-                      class="danger-btn"
-                      onclick="deleteStudent(${s.id})"
-                    >
-                      Haqi
-                    </button>
-
-                  </td>
-
-                </tr>
-
-              `;
-            }
-          ).join("")}
+          `).join("")}
 
         </tbody>
 
       </table>
     `;
 
-  } catch (err) {
+  } catch (error) {
 
-    box.innerHTML = `
-      <div class="message error">
-        ${escapeHtml(err.message)}
-      </div>
-    `;
+    document
+      .getElementById(
+        "studentsList"
+      )
+      .innerHTML = `
+        <div class="empty">
+          ${escapeHtml(error.message)}
+        </div>
+      `;
+
   }
+
 }
 
 
-/* =====================================================
-   ADD STUDENT
-===================================================== */
+document
+  .getElementById("studentForm")
+  .addEventListener(
+    "submit",
+    async function(e) {
 
-async function addStudent() {
+      e.preventDefault();
 
-  try {
+      const full_name =
+        document
+          .getElementById("studentName")
+          .value
+          .trim();
 
-    const full_name =
-      document
-        .getElementById(
-          "studentNameInput"
-        )
-        .value
-        .trim();
+      const student_code =
+        document
+          .getElementById("studentCode")
+          .value
+          .trim();
 
-    const student_code =
-      document
-        .getElementById(
-          "studentCodeInput"
-        )
-        .value
-        .trim()
-        .toUpperCase();
+      const phone =
+        document
+          .getElementById("studentPhone")
+          .value
+          .trim();
 
-    const phone =
-      document
-        .getElementById(
-          "studentPhoneInput"
-        )
-        .value
-        .trim();
+      const class_id =
+        Number(
+          document
+            .getElementById("studentClass")
+            .value
+        );
 
-    const class_id =
-      document
-        .getElementById(
-          "studentClassInput"
-        )
-        .value;
+      if (!class_id) {
 
+        showToast(
+          "Kutaa filadhu.",
+          "error"
+        );
 
-    if (
-      !full_name ||
-      !student_code ||
-      !class_id
-    ) {
+        return;
+      }
 
-      alert(
-        "Maqaa, Student Code fi Kutaa guuti."
-      );
+      try {
 
-      return;
+        await api(
+          "/api/students",
+          {
+            method: "POST",
+            body: JSON.stringify({
+              full_name,
+              student_code,
+              phone,
+              class_id
+            })
+          }
+        );
+
+        document
+          .getElementById("studentForm")
+          .reset();
+
+        showToast(
+          "Barataan milkaa'inaan galmaa'e."
+        );
+
+        await loadStudents();
+
+        await loadDashboard();
+
+      } catch (error) {
+
+        showToast(
+          error.message,
+          "error"
+        );
+
+      }
+
     }
+  );
 
-
-    const data =
-      await api(
-        "/api/students",
-        {
-          method: "POST",
-
-          body: JSON.stringify({
-
-            full_name,
-
-            student_code,
-
-            phone,
-
-            class_id:
-              Number(class_id)
-
-          })
-        }
-      );
-
-
-    document
-      .getElementById(
-        "studentNameInput"
-      )
-      .value = "";
-
-    document
-      .getElementById(
-        "studentCodeInput"
-      )
-      .value = "";
-
-    document
-      .getElementById(
-        "studentPhoneInput"
-      )
-      .value = "";
-
-
-    alert(
-      "✅ Barataan milkaa'inaan galmaa'e."
-    );
-
-
-    if (data.private_link) {
-
-      alert(
-        "Student Link:\n\n" +
-        data.private_link
-      );
-    }
-
-
-    await loadStudents();
-
-    await loadClasses();
-
-    await loadDashboard();
-
-  } catch (err) {
-
-    alert(
-      "❌ " + err.message
-    );
-  }
-}
-
-
-/* =====================================================
-   DELETE STUDENT
-===================================================== */
 
 async function deleteStudent(id) {
 
@@ -3354,7 +3493,6 @@ async function deleteStudent(id) {
       "Barataa kana haquu barbaaddaa?"
     )
   ) {
-
     return;
   }
 
@@ -3367,32 +3505,27 @@ async function deleteStudent(id) {
       }
     );
 
-    alert(
+    showToast(
       "Barataan haqame."
     );
 
     await loadStudents();
 
-    await loadClasses();
-
     await loadDashboard();
 
-  } catch (err) {
+  } catch (error) {
 
-    alert(
-      "❌ " + err.message
+    showToast(
+      error.message,
+      "error"
     );
+
   }
+
 }
 
 
-/* =====================================================
-   REGENERATE STUDENT LINK
-===================================================== */
-
-async function regenerateStudentLink(
-  id
-) {
+async function regenerateStudentLink(id) {
 
   try {
 
@@ -3406,157 +3539,123 @@ async function regenerateStudentLink(
         }
       );
 
-    alert(
-      "✅ Link haaraan:\n\n" +
-      data.private_link
-    );
+    const link =
+      data.link ||
+      data.url ||
+      "";
 
-    await loadStudents();
+    if (link) {
 
-  } catch (err) {
-
-    alert(
-      "❌ " + err.message
-    );
-  }
-}
-
-
-/* =====================================================
-   COPY
-===================================================== */
-
-async function copyText(
-  text
-) {
-
-  try {
-
-    if (
-      navigator.clipboard
-    ) {
-
-      await navigator.clipboard.writeText(
-        text
+      prompt(
+        "Link Barataa:",
+        link
       );
 
-      alert(
-        "Link copy godhame."
+    } else {
+
+      showToast(
+        "Link haaraa uumame."
       );
 
-      return;
     }
 
-    throw new Error(
-      "Clipboard hin jiru."
+  } catch (error) {
+
+    showToast(
+      error.message,
+      "error"
     );
 
-  } catch (_) {
-
-    prompt(
-      "Link kana copy godhi:",
-      text
-    );
   }
+
 }
 
 
-/* =====================================================
-   ATTENDANCE PAGE
-===================================================== */
-
-async function loadAttendancePage() {
-
-  await loadClasses();
-
-  const dateInput =
-    document.getElementById(
-      "attendanceDate"
-    );
-
-  if (!dateInput.value) {
-
-    dateInput.value =
-      today();
-  }
-
-  await loadAttendanceStudents();
-}
-
+/* =========================================================
+   ATTENDANCE
+========================================================= */
 
 async function loadAttendanceStudents() {
 
   const classId =
     document
-      .getElementById(
-        "attendanceClass"
-      )
+      .getElementById("attendanceClass")
       .value;
 
   const date =
     document
-      .getElementById(
-        "attendanceDate"
-      )
-      .value;
+      .getElementById("attendanceDate")
+      .value ||
+      today();
 
-  const box =
+  const container =
     document.getElementById(
-      "attendanceTable"
+      "attendanceStudents"
     );
 
+  if (!classId) {
 
-  if (!classId || !date) {
-
-    box.innerHTML = `
+    container.innerHTML = `
       <div class="empty">
-        Kutaa fi guyyaa filadhu.
+        Kutaa filadhu.
       </div>
     `;
 
     return;
   }
 
-
   try {
 
     const studentsData =
       await api(
         "/api/students?class_id=" +
-        encodeURIComponent(
-          classId
-        )
+        encodeURIComponent(classId)
       );
-
-
-    const attendanceData =
-      await api(
-        "/api/attendance?class_id=" +
-        encodeURIComponent(
-          classId
-        ) +
-        "&date=" +
-        encodeURIComponent(
-          date
-        )
-      );
-
 
     const students =
-      studentsData.students ||
-      [];
+      Array.isArray(studentsData)
+        ? studentsData
+        : (
+            studentsData.students ||
+            studentsData.rows ||
+            []
+          );
 
-    const attendance =
-      attendanceData.attendance ||
-      [];
+    let attendanceData = [];
 
+    try {
 
-    const existing = {};
+      const result =
+        await api(
+          "/api/attendance?class_id=" +
+          encodeURIComponent(classId) +
+          "&date=" +
+          encodeURIComponent(date)
+        );
 
+      attendanceData =
+        Array.isArray(result)
+          ? result
+          : (
+              result.attendance ||
+              result.rows ||
+              []
+            );
 
-    attendance.forEach((a) => {
+    } catch (e) {
 
-      existing[
+      console.warn(
+        "Attendance records hin argamne:",
+        e
+      );
+
+    }
+
+    const attendanceMap = {};
+
+    attendanceData.forEach(a => {
+
+      attendanceMap[
         String(a.student_id)
       ] = a;
 
@@ -3565,10 +3664,9 @@ async function loadAttendanceStudents() {
 
     if (!students.length) {
 
-      box.innerHTML = `
+      container.innerHTML = `
         <div class="empty">
-          Kutaa kana keessatti
-          barataan hin jiru.
+          Kutaa kana keessatti barataan hin jiru.
         </div>
       `;
 
@@ -3576,29 +3674,36 @@ async function loadAttendanceStudents() {
     }
 
 
-    box.innerHTML = `
-      <table>
+    container.innerHTML = `
 
-        <thead>
+      <div class="table-wrap">
 
-          <tr>
-            <th>#</th>
-            <th>Barataa</th>
-            <th>Code</th>
-            <th>Status</th>
-            <th>Yaada</th>
-            <th>Action</th>
-          </tr>
+        <table>
 
-        </thead>
+          <thead>
 
-        <tbody>
+            <tr>
 
-          ${students.map(
-            (s, i) => {
+              <th>Maqaa</th>
+
+              <th>Code</th>
+
+              <th>Status</th>
+
+              <th>Yaada</th>
+
+              <th>Tarkaanfii</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            ${students.map(s => {
 
               const old =
-                existing[
+                attendanceMap[
                   String(s.id)
                 ];
 
@@ -3615,60 +3720,45 @@ async function loadAttendanceStudents() {
                 <tr>
 
                   <td>
-                    ${i + 1}
-                  </td>
-
-                  <td>
-                    <strong>
-                      ${escapeHtml(
-                        s.full_name
-                      )}
-                    </strong>
+                    ${escapeHtml(
+                      s.full_name ||
+                      s.name ||
+                      "-"
+                    )}
                   </td>
 
                   <td>
                     ${escapeHtml(
-                      s.student_code
+                      s.student_code ||
+                      "-"
                     )}
                   </td>
 
                   <td>
 
                     <select
-                      id="status-${s.id}"
+                      id="status-${Number(s.id)}"
                     >
 
                       <option
                         value="present"
-                        ${
-                          status === "present"
-                            ? "selected"
-                            : ""
-                        }
+                        ${status === "present" ? "selected" : ""}
                       >
-                        Present
+                        ✅ Present
                       </option>
 
                       <option
                         value="absent"
-                        ${
-                          status === "absent"
-                            ? "selected"
-                            : ""
-                        }
+                        ${status === "absent" ? "selected" : ""}
                       >
-                        Absent
+                        ❌ Absent
                       </option>
 
                       <option
                         value="late"
-                        ${
-                          status === "late"
-                            ? "selected"
-                            : ""
-                        }
+                        ${status === "late" ? "selected" : ""}
                       >
-                        Late
+                        ⏰ Late
                       </option>
 
                     </select>
@@ -3678,10 +3768,9 @@ async function loadAttendanceStudents() {
                   <td>
 
                     <input
-                      id="note-${s.id}"
-                      value="${escapeHtml(
-                        note
-                      )}"
+                      id="note-${Number(s.id)}"
+                      type="text"
+                      value="${escapeHtml(note)}"
                       placeholder="Yaada..."
                     >
 
@@ -3690,12 +3779,14 @@ async function loadAttendanceStudents() {
                   <td>
 
                     <button
-                      type="button"
-                      class="primary-btn"
-                      style="width:auto"
-                      onclick="saveAttendance(${s.id}, ${Number(classId)})"
+                      class="btn btn-primary"
+                      onclick="saveAttendance(
+                        ${Number(s.id)},
+                        ${Number(classId)},
+                        '${date}'
+                      )"
                     >
-                      Galchi
+                      💾 Olkaa'i
                     </button>
 
                   </td>
@@ -3703,62 +3794,52 @@ async function loadAttendanceStudents() {
                 </tr>
 
               `;
-            }
-          ).join("")}
 
-        </tbody>
+            }).join("")}
 
-      </table>
+          </tbody>
+
+        </table>
+
+      </div>
+
     `;
 
-  } catch (err) {
+  } catch (error) {
 
-    box.innerHTML = `
-      <div class="message error">
-        ${escapeHtml(
-          err.message
-        )}
+    container.innerHTML = `
+      <div class="empty">
+        ${escapeHtml(error.message)}
       </div>
     `;
+
   }
+
 }
 
 
-/* =====================================================
-   SAVE ATTENDANCE
-===================================================== */
-
 async function saveAttendance(
   studentId,
-  classId
+  classId,
+  date
 ) {
 
+  const status =
+    document
+      .getElementById(
+        "status-" + studentId
+      )
+      .value;
+
+  const note =
+    document
+      .getElementById(
+        "note-" + studentId
+      )
+      .value
+      .trim();
+
   try {
-
-    const date =
-      document
-        .getElementById(
-          "attendanceDate"
-        )
-        .value;
-
-    const status =
-      document
-        .getElementById(
-          "status-" +
-          studentId
-        )
-        .value;
-
-    const note =
-      document
-        .getElementById(
-          "note-" +
-          studentId
-        )
-        .value
-        .trim();
-
 
     await api(
       "/api/attendance",
@@ -3782,184 +3863,742 @@ async function saveAttendance(
             note || null
 
         })
+
       }
     );
 
-
-    alert(
-      "✅ Attendance milkaa'inaan galmaa'e."
+    showToast(
+      "Attendance olkaa'ame."
     );
 
+  } catch (error) {
 
-    await loadAttendanceStudents();
-
-    await loadDashboard();
-
-  } catch (err) {
-
-    alert(
-      "❌ Attendance galmeessuu hin dandeenye:\n" +
-      err.message
+    showToast(
+      error.message,
+      "error"
     );
+
   }
+
 }
 
 
-/* =====================================================
+/* =========================================================
    REPORT
-===================================================== */
-
-async function loadReportPage() {
-
-  await loadClasses();
-
-  document
-    .getElementById(
-      "reportTable"
-    )
-    .innerHTML = `
-      <div class="empty">
-        Guyyaa fi kutaa filachuun
-        Report Fidi cuqaasi.
-      </div>
-    `;
-}
-
+========================================================= */
 
 async function loadReport() {
 
   const classId =
     document
-      .getElementById(
-        "reportClass"
-      )
+      .getElementById("reportClass")
       .value;
 
   const from =
     document
-      .getElementById(
-        "reportFrom"
-      )
+      .getElementById("reportFrom")
       .value;
 
   const to =
     document
-      .getElementById(
-        "reportTo"
-      )
+      .getElementById("reportTo")
       .value;
 
-
-  const params = [];
-
-
-  if (classId) {
-
-    params.push(
-      "class_id=" +
-      encodeURIComponent(
-        classId
-      )
-    );
-  }
-
-
-  if (from) {
-
-    params.push(
-      "from=" +
-      encodeURIComponent(
-        from
-      )
-    );
-  }
-
-
-  if (to) {
-
-    params.push(
-      "to=" +
-      encodeURIComponent(
-        to
-      )
-    );
-  }
-
-
-  const url =
-    "/api/attendance/report" +
-    (
-      params.length
-        ? "?" + params.join("&")
-        : ""
-    );
-
-
-  const box =
+  const container =
     document.getElementById(
-      "reportTable"
+      "reportResult"
     );
 
+  if (!classId || !from || !to) {
+
+    container.innerHTML = `
+      <div class="empty">
+        Kutaa, guyyaa jalqabaa fi
+        guyyaa dhumaa guuti.
+      </div>
+    `;
+
+    return;
+  }
 
   try {
 
     const data =
-      await api(url);
+      await api(
+        "/api/attendance/report?" +
+        "class_id=" +
+        encodeURIComponent(classId) +
+        "&from=" +
+        encodeURIComponent(from) +
+        "&to=" +
+        encodeURIComponent(to)
+      );
 
     const rows =
-      data.report || [];
-
+      Array.isArray(data)
+        ? data
+        : (
+            data.report ||
+            data.rows ||
+            []
+          );
 
     if (!rows.length) {
 
-      box.innerHTML = `
+      container.innerHTML = `
         <div class="empty">
-          Report data hin jiru.
+          Report hin argamne.
         </div>
       `;
 
       return;
     }
 
+    container.innerHTML = `
 
-    box.innerHTML = `
+      <div class="table-wrap">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>Barataa</th>
+              <th>Present</th>
+              <th>Absent</th>
+              <th>Late</th>
+              <th>Waliigala</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            ${rows.map(r => `
+
+              <tr>
+
+                <td>
+                  ${escapeHtml(
+                    r.full_name ||
+                    r.student_name ||
+                    "-"
+                  )}
+                </td>
+
+                <td>
+                  ${Number(
+                    r.present ||
+                    r.present_count ||
+                    0
+                  )}
+                </td>
+
+                <td>
+                  ${Number(
+                    r.absent ||
+                    r.absent_count ||
+                    0
+                  )}
+                </td>
+
+                <td>
+                  ${Number(
+                    r.late ||
+                    r.late_count ||
+                    0
+                  )}
+                </td>
+
+                <td>
+                  ${Number(
+                    r.total ||
+                    r.total_days ||
+                    0
+                  )}
+                </td>
+
+              </tr>
+
+            `).join("")}
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    `;
+
+  } catch (error) {
+
+    container.innerHTML = `
+      <div class="empty">
+        ${escapeHtml(error.message)}
+      </div>
+    `;
+
+  }
+
+}
+
+
+/* =========================================================
+   EXAM RESULTS
+========================================================= */
+
+async function loadResults() {
+
+  try {
+
+    const data =
+      await api("/api/results");
+
+    const results =
+      Array.isArray(data)
+        ? data
+        : (
+            data.results ||
+            data.rows ||
+            []
+          );
+
+    const container =
+      document.getElementById(
+        "resultsList"
+      );
+
+    if (!results.length) {
+
+      container.innerHTML = `
+        <div class="empty">
+          Bu'aan qormaataa hin galmoofne.
+        </div>
+      `;
+
+      return;
+    }
+
+    container.innerHTML = `
+
       <table>
 
         <thead>
 
           <tr>
-            <th>#</th>
+
             <th>Barataa</th>
-            <th>Code</th>
-            <th>Kutaa</th>
-            <th>Total</th>
-            <th>Present</th>
-            <th>Absent</th>
-            <th>Late</th>
+            <th>Qormaata</th>
+            <th>Barnoota</th>
+            <th>Qabxii</th>
+            <th>Percentage</th>
+            <th>Guyyaa</th>
+            <th>Tarkaanfii</th>
+
           </tr>
 
         </thead>
 
         <tbody>
 
-          ${rows.map(
-            (r, i) => `
+          ${results.map(r => {
+
+            const score =
+              Number(r.score || 0);
+
+            const total =
+              Number(r.total || 0);
+
+            const percentage =
+              total > 0
+                ? (
+                    score /
+                    total *
+                    100
+                  ).toFixed(1)
+                : "0.0";
+
+            return `
 
               <tr>
 
                 <td>
-                  ${i + 1}
-                </td>
-
-                <td>
                   ${escapeHtml(
-                    r.full_name
+                    r.student_name ||
+                    r.full_name ||
+                    r.student_code ||
+                    "-"
                   )}
                 </td>
 
                 <td>
                   ${escapeHtml(
-                    r.student_code
+                    r.exam_name ||
+                    "-"
+                  )}
+                </td>
+
+                <td>
+                  ${escapeHtml(
+                    r.subject ||
+                    "-"
+                  )}
+                </td>
+
+                <td>
+                  ${score} / ${total}
+                </td>
+
+                <td>
+                  <strong>
+                    ${percentage}%
+                  </strong>
+                </td>
+
+                <td>
+                  ${escapeHtml(
+                    r.exam_date ||
+                    "-"
+                  )}
+                </td>
+
+                <td>
+
+                  <button
+                    class="btn btn-danger"
+                    onclick="deleteResult(${Number(r.id)})"
+                  >
+                    🗑️ Haqi
+                  </button>
+
+                </td>
+
+              </tr>
+
+            `;
+
+          }).join("")}
+
+        </tbody>
+
+      </table>
+
+    `;
+
+  } catch (error) {
+
+    document
+      .getElementById(
+        "resultsList"
+      )
+      .innerHTML = `
+        <div class="empty">
+          ${escapeHtml(error.message)}
+        </div>
+      `;
+
+  }
+
+}
+
+
+document
+  .getElementById("resultForm")
+  .addEventListener(
+    "submit",
+    async function(e) {
+
+      e.preventDefault();
+
+      const student_code =
+        document
+          .getElementById(
+            "resultStudentCode"
+          )
+          .value
+          .trim();
+
+      const exam_name =
+        document
+          .getElementById(
+            "resultExamName"
+          )
+          .value
+          .trim();
+
+      const subject =
+        document
+          .getElementById(
+            "resultSubject"
+          )
+          .value
+          .trim();
+
+      const score =
+        Number(
+          document
+            .getElementById(
+              "resultScore"
+            )
+            .value
+        );
+
+      const total =
+        Number(
+          document
+            .getElementById(
+              "resultTotal"
+            )
+            .value
+        );
+
+      const exam_date =
+        document
+          .getElementById(
+            "resultDate"
+          )
+          .value ||
+        today();
+
+      const note =
+        document
+          .getElementById(
+            "resultNote"
+          )
+          .value
+          .trim();
+
+      if (
+        !student_code ||
+        !exam_name ||
+        !subject
+      ) {
+
+        showToast(
+          "Odeeffannoo barbaachisaa guuti.",
+          "error"
+        );
+
+        return;
+      }
+
+      if (
+        score < 0 ||
+        total <= 0 ||
+        score > total
+      ) {
+
+        showToast(
+          "Qabxii sirreessi.",
+          "error"
+        );
+
+        return;
+      }
+
+      try {
+
+        await api(
+          "/api/results",
+          {
+            method: "POST",
+
+            body: JSON.stringify({
+
+              student_code,
+
+              exam_name,
+
+              subject,
+
+              score,
+
+              total,
+
+              exam_date,
+
+              note
+
+            })
+
+          }
+        );
+
+        document
+          .getElementById(
+            "resultForm"
+          )
+          .reset();
+
+        document
+          .getElementById(
+            "resultDate"
+          )
+          .value = today();
+
+        showToast(
+          "Bu'aan qormaataa galmaa'e."
+        );
+
+        await loadResults();
+
+      } catch (error) {
+
+        showToast(
+          error.message,
+          "error"
+        );
+
+      }
+
+    }
+  );
+
+
+async function deleteResult(id) {
+
+  if (
+    !confirm(
+      "Bu'aa kana haquu barbaaddaa?"
+    )
+  ) {
+    return;
+  }
+
+  try {
+
+    await api(
+      "/api/results/" + id,
+      {
+        method: "DELETE"
+      }
+    );
+
+    showToast(
+      "Bu'aan haqame."
+    );
+
+    await loadResults();
+
+  } catch (error) {
+
+    showToast(
+      error.message,
+      "error"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   STUDENT HOME
+========================================================= */
+
+async function loadStudentHome() {
+
+  try {
+
+    let student =
+      currentStudent;
+
+    if (!student) {
+
+      try {
+
+        const data =
+          await studentApi(
+            "/api/student/me"
+          );
+
+        student =
+          data.student ||
+          data.user ||
+          data;
+
+        currentStudent =
+          student;
+
+      } catch (e) {
+
+        console.warn(
+          "Student me hin argamne:",
+          e
+        );
+
+      }
+
+    }
+
+    if (!student) {
+      return;
+    }
+
+    const name =
+      student.full_name ||
+      student.name ||
+      "-";
+
+    const code =
+      student.student_code ||
+      student.studentCode ||
+      "-";
+
+    const className =
+      student.class_name ||
+      student.className ||
+      student.class ||
+      "-";
+
+    document
+      .getElementById(
+        "studentHomeName"
+      )
+      .textContent = name;
+
+    document
+      .getElementById(
+        "studentHomeCode"
+      )
+      .textContent = code;
+
+    document
+      .getElementById(
+        "studentHomeClass"
+      )
+      .textContent = className;
+
+    updateSidebar();
+
+  } catch (error) {
+
+    console.error(
+      "Student home error:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   STUDENT ATTENDANCE
+========================================================= */
+
+async function loadStudentAttendance() {
+
+  const container =
+    document.getElementById(
+      "studentAttendanceList"
+    );
+
+  try {
+
+    const data =
+      await studentApi(
+        "/api/student/attendance"
+      );
+
+    const rows =
+      Array.isArray(data)
+        ? data
+        : (
+            data.attendance ||
+            data.rows ||
+            []
+          );
+
+    if (!rows.length) {
+
+      container.innerHTML = `
+        <div class="empty">
+          Attendance galmaa'e hin jiru.
+        </div>
+      `;
+
+      return;
+    }
+
+    container.innerHTML = `
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>Guyyaa</th>
+            <th>Kutaa</th>
+            <th>Status</th>
+            <th>Yaada</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          ${rows.map(r => {
+
+            const status =
+              String(
+                r.status || ""
+              ).toLowerCase();
+
+            let badge =
+              "badge";
+
+            let label =
+              status;
+
+            if (
+              status ===
+              "present"
+            ) {
+
+              badge +=
+                " badge-present";
+
+              label =
+                "✅ Present";
+
+            } else if (
+              status ===
+              "absent"
+            ) {
+
+              badge +=
+                " badge-absent";
+
+              label =
+                "❌ Absent";
+
+            } else if (
+              status ===
+              "late"
+            ) {
+
+              badge +=
+                " badge-late";
+
+              label =
+                "⏰ Late";
+
+            }
+
+            return `
+
+              <tr>
+
+                <td>
+                  ${escapeHtml(
+                    r.attendance_date ||
+                    r.date ||
+                    "-"
                   )}
                 </td>
 
@@ -3971,833 +4610,56 @@ async function loadReport() {
                 </td>
 
                 <td>
-                  ${r.total || 0}
+
+                  <span
+                    class="${badge}"
+                  >
+                    ${escapeHtml(label)}
+                  </span>
+
                 </td>
 
-                <td class="status-present">
-                  ${r.present || 0}
-                </td>
-
-                <td class="status-absent">
-                  ${r.absent || 0}
-                </td>
-
-                <td class="status-late">
-                  ${r.late || 0}
+                <td>
+                  ${escapeHtml(
+                    r.note || "-"
+                  )}
                 </td>
 
               </tr>
 
-          `
-          ).join("")}
+            `;
+
+          }).join("")}
 
         </tbody>
 
       </table>
+
     `;
 
-  } catch (err) {
+  } catch (error) {
 
-    box.innerHTML = `
-      <div class="message error">
-        ${escapeHtml(
-          err.message
-        )}
+    container.innerHTML = `
+      <div class="empty">
+        ${escapeHtml(error.message)}
       </div>
     `;
+
   }
+
 }
 
 
-/* =====================================================
-   RESULTS
-===================================================== */
-
-async function loadResults() {
-
-  const box =
-    document.getElementById(
-      "resultsTable"
-    );
-
-  try {
-
-    const data =
-      await api(
-        "/api/results"
-      );
-
-    const results =
-      data.results || [];
-
-
-    if (!results.length) {
-
-      box.innerHTML = `
-        <div class="empty">
-          Bu'aan qormaataa hin jiru.
-        </div>
-      `;
-
-      return;
-    }
-
-
-    box.innerHTML = `
-      <table>
-
-        <thead>
-
-          <tr>
-            <th>#</th>
-            <th>Barataa</th>
-            <th>Code</th>
-            <th>Qormaata</th>
-            <th>Subject</th>
-            <th>Score</th>
-            <th>Percent</th>
-            <th>Guyyaa</th>
-            <th>Action</th>
-          </tr>
-
-        </thead>
-
-        <tbody>
-
-          ${results.map(
-            (r, i) => {
-
-              const percentage =
-                Number(r.total) > 0
-                  ? (
-                      Number(r.score) /
-                      Number(r.total) *
-                      100
-                    ).toFixed(1)
-                  : "0";
-
-              return `
-
-                <tr>
-
-                  <td>
-                    ${i + 1}
-                  </td>
-
-                  <td>
-                    ${escapeHtml(
-                      r.full_name
-                    )}
-                  </td>
-
-                  <td>
-                    ${escapeHtml(
-                      r.student_code
-                    )}
-                  </td>
-
-                  <td>
-                    ${escapeHtml(
-                      r.exam_name
-                    )}
-                  </td>
-
-                  <td>
-                    ${escapeHtml(
-                      r.subject
-                    )}
-                  </td>
-
-                  <td>
-                    ${r.score}/${r.total}
-                  </td>
-
-                  <td>
-                    ${percentage}%
-                  </td>
-
-                  <td>
-                    ${escapeHtml(
-                      r.exam_date
-                    )}
-                  </td>
-
-                  <td>
-
-                    <button
-                      type="button"
-                      class="danger-btn"
-                      onclick="deleteResult(${r.id})"
-                    >
-                      Haqi
-                    </button>
-
-                  </td>
-
-                </tr>
-
-              `;
-            }
-          ).join("")}
-
-        </tbody>
-
-      </table>
-    `;
-
-  } catch (err) {
-
-    box.innerHTML = `
-      <div class="message error">
-        ${escapeHtml(
-          err.message
-        )}
-      </div>
-    `;
-  }
-}
-
-
-/* =====================================================
-   ADD RESULT
-===================================================== */
-
-async function addResult() {
-
-  try {
-
-    const student_code =
-      document
-        .getElementById(
-          "resultStudentCode"
-        )
-        .value
-        .trim()
-        .toUpperCase();
-
-    const exam_name =
-      document
-        .getElementById(
-          "resultExamName"
-        )
-        .value
-        .trim();
-
-    const subject =
-      document
-        .getElementById(
-          "resultSubject"
-        )
-        .value
-        .trim();
-
-    const score =
-      document
-        .getElementById(
-          "resultScore"
-        )
-        .value;
-
-    const total =
-      document
-        .getElementById(
-          "resultTotal"
-        )
-        .value;
-
-    const exam_date =
-      document
-        .getElementById(
-          "resultDate"
-        )
-        .value;
-
-    const note =
-      document
-        .getElementById(
-          "resultNote"
-        )
-        .value
-        .trim();
-
-
-    if (
-      !student_code ||
-      !exam_name ||
-      !subject ||
-      score === "" ||
-      total === "" ||
-      !exam_date
-    ) {
-
-      alert(
-        "Odeeffannoo bu'aa hunda guuti."
-      );
-
-      return;
-    }
-
-
-    const scoreNumber =
-      Number(score);
-
-    const totalNumber =
-      Number(total);
-
-
-    if (
-      Number.isNaN(scoreNumber) ||
-      Number.isNaN(totalNumber)
-    ) {
-
-      alert(
-        "Score fi Total lakkoofsa ta'uu qabu."
-      );
-
-      return;
-    }
-
-
-    if (
-      scoreNumber < 0 ||
-      scoreNumber > totalNumber
-    ) {
-
-      alert(
-        "Score Total caaluu hin danda'u."
-      );
-
-      return;
-    }
-
-
-    await api(
-      "/api/results",
-      {
-        method: "POST",
-
-        body: JSON.stringify({
-
-          student_code,
-
-          exam_name,
-
-          subject,
-
-          score:
-            scoreNumber,
-
-          total:
-            totalNumber,
-
-          exam_date,
-
-          note
-
-        })
-      }
-    );
-
-
-    alert(
-      "✅ Bu'aan qormaataa galmaa'e."
-    );
-
-
-    document
-      .getElementById(
-        "resultStudentCode"
-      )
-      .value = "";
-
-    document
-      .getElementById(
-        "resultExamName"
-      )
-      .value = "";
-
-    document
-      .getElementById(
-        "resultSubject"
-      )
-      .value = "";
-
-    document
-      .getElementById(
-        "resultScore"
-      )
-      .value = "";
-
-    document
-      .getElementById(
-        "resultNote"
-      )
-      .value = "";
-
-
-    await loadResults();
-
-  } catch (err) {
-
-    alert(
-      "❌ " + err.message
-    );
-  }
-}
-
-
-/* =====================================================
-   DELETE RESULT
-===================================================== */
-
-async function deleteResult(id) {
-
-  if (
-    !confirm(
-      "Bu'aa kana haquu barbaaddaa?"
-    )
-  ) {
-
-    return;
-  }
-
-
-  try {
-
-    await api(
-      "/api/results/" + id,
-      {
-        method: "DELETE"
-      }
-    );
-
-    alert(
-      "Bu'aan haqame."
-    );
-
-    await loadResults();
-
-  } catch (err) {
-
-    alert(
-      "❌ " + err.message
-    );
-  }
-}
-
-
-/* =====================================================
-   STUDENT PAGE
-===================================================== */
-
-async function studentPage(page) {
-
-  const pages = [
-    "home",
-    "attendance",
-    "results"
-  ];
-
-
-  pages.forEach((p) => {
-
-    const el =
-      document.getElementById(
-        "student-" + p
-      );
-
-    if (el) {
-
-      el.classList.toggle(
-        "active",
-        p === page
-      );
-    }
-
-  });
-
-
-  document
-    .querySelectorAll(
-      "#studentNav .nav-btn"
-    )
-    .forEach(
-      btn =>
-        btn.classList.remove(
-          "active"
-        )
-    );
-
-
-  const index =
-    pages.indexOf(page);
-
-
-  const navButtons =
-    document.querySelectorAll(
-      "#studentNav .nav-btn"
-    );
-
-
-  if (
-    index >= 0 &&
-    navButtons[index]
-  ) {
-
-    navButtons[index]
-      .classList.add(
-        "active"
-      );
-  }
-
-
-  const titles = {
-
-    home:
-      "Odeeffannoo Koo",
-
-    attendance:
-      "Attendance Koo",
-
-    results:
-      "Bu'aa Koo"
-
-  };
-
-
-  document
-    .getElementById(
-      "pageTitle"
-    )
-    .textContent =
-    titles[page] ||
-    "Walo-OR";
-
-
-  closeSidebar();
-
-
-  try {
-
-    if (page === "home") {
-
-      await loadStudentHome();
-    }
-
-    if (page === "attendance") {
-
-      await loadStudentAttendance();
-    }
-
-    if (page === "results") {
-
-      await loadStudentResults();
-    }
-
-  } catch (err) {
-
-    console.error(
-      "STUDENT PAGE:",
-      err
-    );
-  }
-}
-
-
-/* =====================================================
-   STUDENT HOME
-===================================================== */
-
-async function loadStudentHome() {
-
-  const info =
-    document.getElementById(
-      "studentInfo"
-    );
-
-
-  try {
-
-    const data =
-      await studentApi(
-        "/api/student/me"
-      );
-
-
-    currentStudent =
-      data.student;
-
-
-    document
-      .getElementById(
-        "sideUserName"
-      )
-      .textContent =
-      currentStudent.full_name;
-
-
-    document
-      .getElementById(
-        "sideUserRole"
-      )
-      .textContent =
-      "👨‍🎓 Barataa";
-
-
-    info.innerHTML = `
-
-      <div class="form-grid">
-
-        <div>
-
-          <strong>
-            Maqaa
-          </strong>
-
-          <br>
-
-          ${escapeHtml(
-            currentStudent.full_name
-          )}
-
-        </div>
-
-
-        <div>
-
-          <strong>
-            Student Code
-          </strong>
-
-          <br>
-
-          ${escapeHtml(
-            currentStudent.student_code
-          )}
-
-        </div>
-
-
-        <div>
-
-          <strong>
-            Kutaa
-          </strong>
-
-          <br>
-
-          ${escapeHtml(
-            currentStudent.class_name ||
-            "-"
-          )}
-
-        </div>
-
-
-        <div>
-
-          <strong>
-            Grade
-          </strong>
-
-          <br>
-
-          ${escapeHtml(
-            currentStudent.grade ||
-            "-"
-          )}
-
-        </div>
-
-      </div>
-
-    `;
-
-  } catch (err) {
-
-    info.innerHTML = `
-      <div class="message error">
-        ${escapeHtml(
-          err.message
-        )}
-      </div>
-    `;
-  }
-}
-
-
-/* =====================================================
-   STUDENT ATTENDANCE
-===================================================== */
-
-async function loadStudentAttendance() {
-
-  const box =
-    document.getElementById(
-      "studentAttendanceTable"
-    );
-
-
-  box.innerHTML = `
-    <div class="empty">
-      Attendance fe'aa jira...
-    </div>
-  `;
-
-
-  try {
-
-    const data =
-      await studentApi(
-        "/api/student/attendance"
-      );
-
-
-    const rows =
-      data.attendance || [];
-
-
-    if (!rows.length) {
-
-      box.innerHTML = `
-        <div class="empty">
-          Attendance kee ammaaf hin jiru.
-        </div>
-      `;
-
-      return;
-    }
-
-
-    box.innerHTML = `
-      <table>
-
-        <thead>
-
-          <tr>
-            <th>#</th>
-            <th>Guyyaa</th>
-            <th>Kutaa</th>
-            <th>Status</th>
-            <th>Yaada</th>
-          </tr>
-
-        </thead>
-
-        <tbody>
-
-          ${rows.map(
-            (r, i) => {
-
-              let statusText =
-                "Late";
-
-              let statusClass =
-                "status-late";
-
-
-              if (
-                r.status ===
-                "present"
-              ) {
-
-                statusText =
-                  "Present";
-
-                statusClass =
-                  "status-present";
-              }
-
-
-              if (
-                r.status ===
-                "absent"
-              ) {
-
-                statusText =
-                  "Absent";
-
-                statusClass =
-                  "status-absent";
-              }
-
-
-              return `
-
-                <tr>
-
-                  <td>
-                    ${i + 1}
-                  </td>
-
-                  <td>
-                    ${escapeHtml(
-                      r.attendance_date
-                    )}
-                  </td>
-
-                  <td>
-                    ${escapeHtml(
-                      r.class_name ||
-                      "-"
-                    )}
-                  </td>
-
-                  <td
-                    class="${statusClass}"
-                  >
-                    ${statusText}
-                  </td>
-
-                  <td>
-                    ${escapeHtml(
-                      r.note ||
-                      "-"
-                    )}
-                  </td>
-
-                </tr>
-
-              `;
-            }
-          ).join("")}
-
-        </tbody>
-
-      </table>
-    `;
-
-  } catch (err) {
-
-    box.innerHTML = `
-      <div class="message error">
-        ${escapeHtml(
-          err.message
-        )}
-      </div>
-    `;
-  }
-}
-
-
-/* =====================================================
+/* =========================================================
    STUDENT RESULTS
-===================================================== */
+========================================================= */
 
 async function loadStudentResults() {
 
-  const box =
+  const container =
     document.getElementById(
-      "studentResultsTable"
+      "studentResultsList"
     );
-
-
-  box.innerHTML = `
-    <div class="empty">
-      Bu'aa qormaataa fe'aa jira...
-    </div>
-  `;
-
 
   try {
 
@@ -4806,123 +4668,163 @@ async function loadStudentResults() {
         "/api/student/results"
       );
 
-
     const rows =
-      data.results || [];
-
+      Array.isArray(data)
+        ? data
+        : (
+            data.results ||
+            data.rows ||
+            []
+          );
 
     if (!rows.length) {
 
-      box.innerHTML = `
+      container.innerHTML = `
         <div class="empty">
-          Bu'aan qormaataa ammaaf hin jiru.
+          Bu'aan qormaataa hin jiru.
         </div>
       `;
 
       return;
     }
 
+    container.innerHTML = `
 
-    box.innerHTML = `
       <table>
 
         <thead>
 
           <tr>
-            <th>#</th>
+
             <th>Qormaata</th>
-            <th>Subject</th>
-            <th>Score</th>
-            <th>Percent</th>
+            <th>Barnoota</th>
+            <th>Qabxii</th>
+            <th>Percentage</th>
             <th>Guyyaa</th>
             <th>Yaada</th>
+
           </tr>
 
         </thead>
 
         <tbody>
 
-          ${rows.map(
-            (r, i) => {
+          ${rows.map(r => {
 
-              const percent =
-                Number(r.total) > 0
-                  ? (
-                      Number(r.score) /
-                      Number(r.total) *
-                      100
-                    ).toFixed(1)
-                  : "0";
+            const score =
+              Number(
+                r.score || 0
+              );
 
+            const total =
+              Number(
+                r.total || 0
+              );
 
-              return `
+            const percentage =
+              total > 0
+                ? (
+                    score /
+                    total *
+                    100
+                  ).toFixed(1)
+                : "0.0";
 
-                <tr>
+            return `
 
-                  <td>
-                    ${i + 1}
-                  </td>
+              <tr>
 
-                  <td>
-                    ${escapeHtml(
-                      r.exam_name
-                    )}
-                  </td>
+                <td>
+                  ${escapeHtml(
+                    r.exam_name ||
+                    "-"
+                  )}
+                </td>
 
-                  <td>
-                    ${escapeHtml(
-                      r.subject
-                    )}
-                  </td>
+                <td>
+                  ${escapeHtml(
+                    r.subject ||
+                    "-"
+                  )}
+                </td>
 
-                  <td>
-                    ${r.score}/${r.total}
-                  </td>
+                <td>
+                  <strong>
+                    ${score}
+                  </strong>
+                  /
+                  ${total}
+                </td>
 
-                  <td>
-                    ${percent}%
-                  </td>
+                <td>
+                  <strong>
+                    ${percentage}%
+                  </strong>
+                </td>
 
-                  <td>
-                    ${escapeHtml(
-                      r.exam_date
-                    )}
-                  </td>
+                <td>
+                  ${escapeHtml(
+                    r.exam_date ||
+                    "-"
+                  )}
+                </td>
 
-                  <td>
-                    ${escapeHtml(
-                      r.note ||
-                      "-"
-                    )}
-                  </td>
+                <td>
+                  ${escapeHtml(
+                    r.note || "-"
+                  )}
+                </td>
 
-                </tr>
+              </tr>
 
-              `;
-            }
-          ).join("")}
+            `;
+
+          }).join("")}
 
         </tbody>
 
       </table>
+
     `;
 
-  } catch (err) {
+  } catch (error) {
 
-    box.innerHTML = `
-      <div class="message error">
-        ${escapeHtml(
-          err.message
-        )}
+    container.innerHTML = `
+      <div class="empty">
+        ${escapeHtml(error.message)}
       </div>
     `;
+
   }
+
 }
 
 
-/* =====================================================
+/* =========================================================
+   SIDEBAR MOBILE
+========================================================= */
+
+function toggleSidebar() {
+
+  document
+    .getElementById("sidebar")
+    .classList.toggle("open");
+
+}
+
+
+function closeSidebar() {
+
+  document
+    .getElementById("sidebar")
+    .classList.remove("open");
+
+}
+
+
+/* =========================================================
    LOGOUT
-===================================================== */
+========================================================= */
 
 function logout() {
 
@@ -4934,89 +4836,57 @@ function logout() {
     STUDENT_TOKEN_KEY
   );
 
-  currentUser = null;
+  currentTeacher = null;
 
   currentStudent = null;
 
-  openAuthPage();
-}
+  hideAllPages();
 
+  document
+    .getElementById("appPage")
+    .classList.add("hidden");
 
-/* =====================================================
-   MOBILE SIDEBAR
-===================================================== */
-
-function toggleSidebar() {
+  document
+    .getElementById("authPage")
+    .style.display = "flex";
 
   document
     .getElementById(
-      "sidebar"
+      "teacherLoginForm"
     )
-    .classList.toggle(
-      "open"
-    );
-}
-
-
-function closeSidebar() {
+    .reset();
 
   document
     .getElementById(
-      "sidebar"
+      "studentLoginForm"
     )
-    .classList.remove(
-      "open"
-    );
+    .reset();
+
+  showAuth("teacher");
+
+  clearAuthMessage();
+
 }
 
 
-/* =====================================================
+/* =========================================================
    AUTO LOGIN
-===================================================== */
+========================================================= */
 
 async function autoLogin() {
-
-  const teacherToken =
-    localStorage.getItem(
-      TEACHER_TOKEN_KEY
-    );
 
   const studentToken =
     localStorage.getItem(
       STUDENT_TOKEN_KEY
     );
 
-
-  /* Teacher */
-
-  if (teacherToken) {
-
-    try {
-
-      const data =
-        await api(
-          "/api/auth/me"
-        );
-
-      currentUser =
-        data.user;
-
-      currentStudent = null;
-
-      openTeacherApp();
-
-      return;
-
-    } catch (_) {
-
-      localStorage.removeItem(
-        TEACHER_TOKEN_KEY
-      );
-    }
-  }
+  const teacherToken =
+    localStorage.getItem(
+      TEACHER_TOKEN_KEY
+    );
 
 
-  /* Student */
+  /* Student token dursee */
 
   if (studentToken) {
 
@@ -5028,9 +4898,9 @@ async function autoLogin() {
         );
 
       currentStudent =
-        data.student;
-
-      currentUser = null;
+        data.student ||
+        data.user ||
+        data;
 
       openStudentApp();
 
@@ -5038,52 +4908,74 @@ async function autoLogin() {
 
       return;
 
-    } catch (_) {
+    } catch (error) {
 
       localStorage.removeItem(
         STUDENT_TOKEN_KEY
       );
+
     }
+
+  }
+
+
+  /* Teacher token */
+
+  if (teacherToken) {
+
+    try {
+
+      const data =
+        await api(
+          "/api/auth/me"
+        );
+
+      currentTeacher =
+        data.user ||
+        data.teacher ||
+        data;
+
+      openTeacherApp();
+
+      return;
+
+    } catch (error) {
+
+      localStorage.removeItem(
+        TEACHER_TOKEN_KEY
+      );
+
+    }
+
   }
 
 
   openAuthPage();
+
 }
 
 
-/* =====================================================
-   ENTER KEY - STUDENT LOGIN
-===================================================== */
-
-document
-  .getElementById(
-    "studentCodeLogin"
-  )
-  .addEventListener(
-    "keydown",
-    function(event) {
-
-      if (
-        event.key ===
-        "Enter"
-      ) {
-
-        event.preventDefault();
-
-        studentLogin();
-      }
-
-    }
-  );
-
-
-/* =====================================================
+/* =========================================================
    START
-===================================================== */
+========================================================= */
 
 document.addEventListener(
   "DOMContentLoaded",
   function() {
+
+    /*
+      IMPORTANT:
+      Page tokko qofa active ta'uu qaba.
+      Teacher dashboard HTML keessa active hin qabu.
+    */
+
+    hideAllPages();
+
+    document
+      .getElementById(
+        "authPage"
+      )
+      .style.display = "flex";
 
     autoLogin();
 
